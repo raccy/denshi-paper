@@ -1,0 +1,23 @@
+AllCops:
+  TargetRubyVersion: 2.5
+
+Layout/EndOfLine:
+  EnforcedStyle: lf
+
+Style/Documentation:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Style/SpecialGlobalVars:
+  EnforcedStyle: use_perl_names
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma

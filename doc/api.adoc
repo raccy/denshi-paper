@@ -1,0 +1,246 @@
+= API仕様書
+
+電子ペーパーとの通信でのAPIについて説明します。FMV-DPPL2でのみ確認しています。
+
+== 基本仕様
+
+どの接続であってもネットワーク通信になっており、全てのプロトコルは HTTP/1.1 です。APIによって使える接続方式が異なります。「接続」はそれぞれ次の意味です。
+
+[horizontal]
+USB:: USB接続 (Ethernet over USB)
+Blootooth:: Blootooth接続 (現在未確認)
+HTTP:: ネットワーク(Wi-Fi)を通じて、8080ポートへHTTP通信
+HTTPS:: ネットワーク(Wi-Fi)を通じて、8443ポートへHTTPS通信(暗号化)
+
+HTTPSで使用される証明書はアプリケーションインストール時に信頼済みストアにインストールされます。HTTPSは認証処理によりよって取得する資格情報のクッキーがなければなりません。
+
+APIとの通信時のデータのやり取りは原則JSONを用いて行われます。エンコードはUTF-8です。機器側のWebサーバーアプリケーションはRestlet-Frameworkです。
+
+== API
+
+バージョン 1.3 対応しています。ファームウェアアップデート等でAPIのバージョンがあがった場合は対応できない場合があります。
+
+=== GET /register/serial_number
+
+機器のシリアル番号を取得します。
+
+==== 要求
+
+[horizontal]
+メソッド:: GET
+パス:: /register/serial_number
+接続:: USB, HTTP
+認証:: 不要
+
+==== 応答
+
+.JSON
+[horizontal]
+value:: 機器のシリアル番号文字列
+
+=== GET /register/information
+
+機器の基本情報(モデル名等)を取得します。
+
+==== 要求
+
+[horizontal]
+メソッド:: GET
+パス:: /register/information
+接続:: USB, HTTP
+認証:: 不要
+
+==== 応答
+
+.JSON
+[horizontal]
+device_color:: デバイスの色 CSSカラー形式 現行は白(`"#ffffff"`)のみ
+model_name:: モデル名 FMV-DPP02は `"P02"`
+serial_number:: 機器のシリアル番号文字列
+sku_code:: 言語コード？？？ 日本語では `"J"` 。
+
+=== GET /api_version
+
+APIのバージョンを取得します。現在のバージョンは 1.3 です。
+
+==== 要求
+
+[horizontal]
+メソッド:: GET
+パス:: /register/information
+接続:: USB, HTTP, HTTPS
+認証:: 不要
+
+.クエリ
+[horizontal]
+_:: (オプション) POSIXタイムのミリ秒(接続開始したときの時刻)
+
+==== 応答
+
+.JSON
+[horizontal]
+value:: APIバージョン 現在は `"1.3"`
+
+=== POST /register/pin
+
+(調査中)
+
+==== 要求
+
+[horizontal]
+メソッド:: POST
+パス:: /register/pin
+接続:: USB
+認証:: (不明)
+
+==== 応答
+
+(不明)
+
+=== POST /register/hash
+
+(調査中)
+
+==== 要求
+
+[horizontal]
+メソッド:: POST
+パス:: /register/hash
+接続:: USB
+認証:: (不明)
+
+==== 応答
+
+(不明)
+
+=== POST /register/ca
+
+(調査中)
+
+==== 要求
+
+[horizontal]
+メソッド:: POST
+パス:: /register/ca
+接続:: USB
+認証:: (不明)
+
+==== 応答
+
+(不明)
+
+=== POST /register
+
+(調査中)
+
+==== 要求
+
+[horizontal]
+メソッド:: POST
+パス:: /register
+接続:: USB
+認証:: (不明)
+
+==== 応答
+
+(不明)
+
+=== PUT /register/cleanup
+
+(調査中)
+
+==== 要求
+
+[horizontal]
+メソッド:: PUT
+パス:: /register/cleanup
+接続:: USB
+認証:: (不明)
+
+==== 応答
+
+(不明)
+
+=== GET /ping
+
+(調査中)
+
+==== 要求
+
+[horizontal]
+メソッド:: GET
+パス:: /ping
+接続:: HTTPS
+認証:: 必要
+
+==== 応答
+
+(不明)
+
+== GET /auth/nonce/%UUID%
+
+==== 要求
+
+[horizontal]
+メソッド:: GET
+パス:: `/auth/nonce/%UUID%`
+接続:: HTTPS
+
+`%UUID%` はdeviceid.datに書かれているUUID
+
+==== 応答
+
+.JSON
+[horizontal]
+nonce:: ノンス(64バイトASCII文字列)
+
+ノンスは `/^[A-Za-z0-9+\/]{64}$/` であるため、暗号論的に安全に生成した48バイトの乱数をBase64でエンコードしていることによって得ていると思われます。しかし、秘密鍵による署名の際は、デコードせずにそのまま文字列データとして扱います。
+
+== PUT /auth
+
+==== 要求
+
+Origin: file://
+
+.JSON
+[horizontal]
+cliend_id:: `/auth/nonce/%UUID%` で指定したUUID
+nonce_signed:: 秘密鍵によるノンスの署名(改行無しのBase64エンコード)
+
+**ノンスはデコードしません。**ハッシュアルゴリズムにはSHA256を使用し、クライアントの秘密鍵で署名します。Rubyで書いた場合、 `Base64.strict_encode64(pkey.sign('sha256', nonce))` となります。
+
+==== 応答
+
+.Cookie
+[horizontal]
+Credentials:: 資格情報(64バイトASCII文字列)
+Domain:: `digitalpaper.local`
+Path:: `/`
+Secure:: 有効
+
+資格情報は `/^[A-Za-z0-9+\/]{64}$/` であるため、暗号論的に安全に生成した48バイトの乱数をBase64でエンコードしていることによって得ていると思われます。
+
+=== PUT /system/configs/datetime
+
+Origin: file://
+
+[horizontal]
+value:: UTCでのXMLスキーマ sprintfにおける"%Y-%m-%dT%H:%M:%SZ"
+
+==== 応答
+
+無し
+
+
+
+== その他の応答
+
+=== 認証失敗
+
+[horizontal]
+ステータス:: 401 Unauthorized
+
+.JSON
+[horizontal]
+error_code:: `"40100"`
+message:: `"Authentication is required."`
