@@ -67,7 +67,7 @@ APIのバージョンを取得します。現在のバージョンは 1.3 です
 
 [horizontal]
 メソッド:: GET
-パス:: /register/information
+パス:: /api_version
 接続:: USB, HTTP, HTTPS
 認証:: 不要
 

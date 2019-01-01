@@ -4,6 +4,9 @@ AllCops:
 Layout/EndOfLine:
   EnforcedStyle: lf
 
+Layout/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+
 Style/Documentation:
   Enabled: false
 
