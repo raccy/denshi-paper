@@ -4,7 +4,7 @@ module DenshiPaper
   module API
     HTTP_PORT = 8080
     HTTPS_PORT = 8443
-    API_VERSION = '1.3'
+    KNOWN_API_VERSIONS = ['1.3']
 
     module Path
       SERIAL_NUMBER = '/register/serial_number'

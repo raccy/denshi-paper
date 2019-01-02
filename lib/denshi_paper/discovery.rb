@@ -1,53 +1,49 @@
 # frozen_string_literal: true
 
 require 'json'
-require 'net/http'
 require 'resolv'
+require 'uri'
+require 'timeout'
+
+require 'faraday'
+require 'faraday_middleware'
+require 'parallel'
 
 require 'denshi_paper/api'
 require 'denshi_paper/device'
 
 module DenshinPaper
-
   FUJITSU_DIGITAL_PAPER_SERVICE = 'dp_fujitsu'
   # TODO: Sony device
-  #SONY_DIGITAL_PAPER_SERVICE =
+  # SONY_DIGITAL_PAPER_SERVICE =
 
   class Discovery
-    def initialize
+    def initialize(service: FUJITSU_DIGITAL_PAPER_SERVICE, timeout: 60)
+      @service = service
+      @timeout = timeout
       @devices = []
     end
 
-    def discover(service)
-      host_list = search_mdns_service(service, 'tcp')
-      tg = ThreadGroup.new
-      host_list.map do |host|
-        tg.add Thread.new() do
-          Net::HTTP.start(host[:address], API::HTTP_PORT) do |http|
-            http.get(API::Path::SERIAL_NUMBER)
-          end
+    def search_device
+      devices = search_mdns_service.map do |host|
+        Device.new(host[:address], hostname: host[:hostname])
+      end
+
+      Parallel.map(devices, in_threads: 4) do |device|
+        Timeout.timeout(@timeout) do
+          [device.serial_number, device]
         end
-      end
+      # rescue => e
+      #   Denshi_paper.logger.warn(e)
+      #   [nil, nil]
+      end.to_hash.compact.valuse
     end
 
-    def check_device(name, address)
-      Net::HTTP.start(host[:address], API::HTTP_PORT) do |http|
-        response = http.get(API::Path::SERIAL_NUMBER)
-        response_body = response.read_body
-        if response
-          response_data =
-        if response
-        http.get(API::Path::INFORAMTION)
-        http.get(API::Path::API_VERSION)
-      end
-
-    end
-
-    def search_mdns_service(service, protocol, domain = 'local', timeouts: nil)
+    def search_mdns_service
       rdri = Resolv::DNS::Resource::IN
-      srv_name = "_#{service}._#{protocol}.#{domain}."
+      srv_name = "_#{@service}._tcp.local."
       mdns = Resolv::MDNS.new
-      mdns.timeouts = timeouts if timeouts
+      mdns.timeouts = @timeout
       mdns.getresources(srv_name, rdri::PTR)
         .map(&:name).uniq
         .flat_map { |name| mdns.getresources(name, rdri::SRV) }
@@ -55,7 +51,7 @@ module DenshinPaper
         .flat_map do |target|
           [rdri::A, rdri::AAAA]
             .flat_map { |type| mdns.getresources(target, type) }
-            .map { |a| { name: target.to_s, address: a.address.to_s } }
+            .map { |a| { hostname: target.to_s, address: a.address.to_s } }
         end
     end
   end

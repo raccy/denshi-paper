@@ -24,3 +24,9 @@ Style/TrailingCommaInHashLiteral:
 
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: consistent_comma
+
+Style/AccessModifierDeclarations:
+  EnforcedStyle: inline
+
+Style/RescueStandardError:
+  EnforcedStyle: implicit

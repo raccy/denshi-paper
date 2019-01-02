@@ -3,5 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-# gem 'faraday'
-gem 'rest-client'
+gem 'faraday'
+gem 'faraday_middleware'
+gem 'hashie'
+gem 'parallel'
