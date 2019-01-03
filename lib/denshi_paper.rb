@@ -2,7 +2,11 @@
 
 require 'logger'
 
-# require 'denshi_paper/client'
+require 'denshi_paper/api'
+require 'denshi_paper/client'
+require 'denshi_paper/device'
+require 'denshi_paper/discovery'
+require 'denshi_paper/error'
 
 module DenshiPaper
   def self.logger=(logger)
@@ -10,6 +14,6 @@ module DenshiPaper
   end
 
   def self.logger
-    @logger ||= Logger.new($stdin)
+    @logger ||= Logger.new($stdout)
   end
 end

@@ -1,0 +1,16 @@
+#!/bin/env ruby
+
+$: << File.expand_path('../lib', __dir__)
+
+require 'denshi_paper'
+
+DenshiPaper.logger.level = 0
+
+disc = DenshiPaper::Discovery.new
+list = disc.search_device
+list.each { |d| p d }
+list.each(&:model_name)
+list.each(&:device_color)
+list.each(&:sku_code)
+list.each(&:api_version)
+pp list

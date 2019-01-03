@@ -12,7 +12,7 @@ require 'parallel'
 require 'denshi_paper/api'
 require 'denshi_paper/device'
 
-module DenshinPaper
+module DenshiPaper
   FUJITSU_DIGITAL_PAPER_SERVICE = 'dp_fujitsu'
   # TODO: Sony device
   # SONY_DIGITAL_PAPER_SERVICE =
@@ -28,15 +28,19 @@ module DenshinPaper
       devices = search_mdns_service.map do |host|
         Device.new(host[:address], hostname: host[:hostname])
       end
+      DenshiPaper.logger.debug(devices)
 
       Parallel.map(devices, in_threads: 4) do |device|
-        Timeout.timeout(@timeout) do
-          [device.serial_number, device]
+        begin
+          pp device.serial_number
+          Timeout.timeout(@timeout) do
+            [device.serial_number, device]
+          end
+        rescue => e
+          DenshiPaper.logger.warn(e)
+          [nil, nil]
         end
-      # rescue => e
-      #   Denshi_paper.logger.warn(e)
-      #   [nil, nil]
-      end.to_hash.compact.valuse
+      end.to_h.compact.values
     end
 
     def search_mdns_service

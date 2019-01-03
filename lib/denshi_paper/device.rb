@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'ipaddr'
+require 'faraday'
+require 'faraday_middleware'
 
 module DenshiPaper
   class Device
@@ -15,18 +17,17 @@ module DenshiPaper
     end
 
     def http_url
-      @http_url ||= URI::HTTP.build(address, API::HTTP_PORT)
+      @http_url ||= URI::HTTP.build(host: address, port: API::HTTP_PORT)
     end
 
     def https_url
-      @https_url ||= URI::HTTPS.build(address, API::HTTPS_PORT)
+      @https_url ||= URI::HTTPS.build(host: address, port: API::HTTPS_PORT)
     end
 
     private def connect
       @connect ||= Faraday.new(http_url) do |faraday|
         faraday.response :logger, DenshiPaper.logger
         faraday.response :json, content_type: /\bjson$/
-        faraday.response :mashify
         faraday.response :raise_error
         faraday.adapter  Faraday.default_adapter
       end
@@ -37,26 +38,23 @@ module DenshiPaper
     end
 
     private def get_serial_number
-      data = connect.get(API::Path::SIRIAL_NUMBER).body.value
+      data = connect.get(API::Path::SERIAL_NUMBER).body['value']
       unless /\A\d+\z/.match?(data)
         raise "Invalid serial number. serial_number: #{data}"
       end
-      date
+      data
     end
 
     def device_color
-      @device_color ||= information.device_color
+      @device_color ||= information['device_color']
     end
 
     def model_name
-      @model_name ||= information.model_name
+      @model_name ||= information['model_name']
     end
 
     def sku_code
-      @sku_code ||= inoframiton.sku_code
-    end
-
-    private def get_serial_number
+      @sku_code ||= information['sku_code']
     end
 
     private def information
@@ -65,12 +63,12 @@ module DenshiPaper
 
     private def get_information
       data = connect.get(API::Path::INFORMATION).body
-      unless serial_number == data.serial_number
+      unless serial_number == data['serial_number']
         raise 'Serial numbers do not match. ' \
           "information.serial_number: #{data.serial_number}, " \
           "but expected: #{@seirial_number}"
       end
-      date
+      data
     end
 
     def api_version
@@ -78,7 +76,7 @@ module DenshiPaper
     end
 
     private def get_api_version
-      data = connect.get(API::Path::API_VERSION).body.value
+      data = connect.get(API::Path::API_VERSION).body['value']
       unless API::KNOWN_API_VERSIONS.include?(data)
         raise "Unknown api version. api_version: #{data}"
       end
