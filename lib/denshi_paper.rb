@@ -14,6 +14,8 @@ module DenshiPaper
   end
 
   def self.logger
-    @logger ||= Logger.new($stdout)
+    @logger ||= Logger.new($stderr).tap do |logger|
+      logger.level = Logger::INFO
+    end
   end
 end

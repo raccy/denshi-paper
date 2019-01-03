@@ -32,12 +32,11 @@ module DenshiPaper
 
       Parallel.map(devices, in_threads: 4) do |device|
         begin
-          pp device.serial_number
           Timeout.timeout(@timeout) do
             [device.serial_number, device]
           end
         rescue => e
-          DenshiPaper.logger.warn(e)
+          DenshiPaper.logger.warn(e.message)
           [nil, nil]
         end
       end.to_h.compact.values
