@@ -4,6 +4,8 @@
 
 == 基本仕様
 
+=== 接続形式
+
 どの接続であってもネットワーク通信になっており、全てのプロトコルは HTTP/1.1 です。APIによって使える接続方式が異なります。「接続」はそれぞれ次の意味です。
 
 [horizontal]
@@ -12,9 +14,30 @@ Blootooth:: Blootooth接続 (現在未確認)
 HTTP:: ネットワーク(Wi-Fi)を通じて、8080ポートへHTTP通信
 HTTPS:: ネットワーク(Wi-Fi)を通じて、8443ポートへHTTPS通信(暗号化)
 
-HTTPSで使用される証明書はアプリケーションインストール時に信頼済みストアにインストールされます。HTTPSは認証処理によりよって取得する資格情報のクッキーがなければなりません。
+HTTPSで使用される証明書はアプリケーションインストール時に信頼済みストアにインストールされます。証明書のホスト名は"digitalpaper.local"に固定のため、複数の機器がある場合、証明書のホスト名(CN)とmDNSで取得するホスト名が一致するとは限りません。
+
+=== 認証
+
+HTTPS接続は/auth系を除いて資格情報のクッキーが必須です。クッキーは常に更新されていきますので、HTTPS通信時はクッキーを管理したクライアントが必要になります。最初の資格情報は/auth系を用いた認証そりで取得します。
+
+=== コンテンツ
 
 APIとの通信時のデータのやり取りは原則JSONを用いて行われます。エンコードはUTF-8です。機器側のWebサーバーアプリケーションはRestlet-Frameworkです。
+
+ファイルの送受信を除き、PUT/POSTの要求およびGET/POSTの応答のコンテンツはUTF-8のJSONです。
+
+Content-Type:: application/json; charset=UTF-8
+
+=== 日時表示
+
+日時表示は二種類あります。ECMAScriptでの処理を前提にしているため、それに添った形式になっています。
+
+ISO 8601日時形式:: ECMAScriptで定められたISO 8601拡張フォーマットの日時形式です。タイムゾーンはUTCで固定(常にZ)で、ミリ秒は表記しません。`YYYY-MM-DDTHH:mm:ssZ`と言う形になります。strftime形式の場合は`%Y-%m-%dT%H:%M:%SZ`です。
+UNIX時間ミリ秒:: UNIXエポックから経過**ミリ秒**です。ECMAScriptにおけるDateオブジェクトのvalueと同じになります。閏秒は無視されます。多くのUNIX時間とは違いミリ秒であることに注意してください。(特に、ECMAScript以外で処理する場合は注意が必要)
+
+=== エントリー
+
+エントリーはファイルまたはディレクトリ(フォルダ)です。一意のIDで管理されています。トップディレクトリのIDは`root`で固定です。それ以外はUUID形式で管理されています。
 
 == API
 
@@ -222,6 +245,8 @@ Secure:: 有効
 
 === PUT /system/configs/datetime
 
+日時を設定します。
+
 Origin: file://
 
 [horizontal]
@@ -231,7 +256,74 @@ value:: UTCでのXMLスキーマ sprintfにおける"%Y-%m-%dT%H:%M:%SZ"
 
 無し
 
+== GET /system/configs
 
+=== 要求
+
+.クエリ
+[horizontal]
+_:: POSIXタイムのミリ秒(接続開始したときの時刻)
+
+=== 応答
+
+[horizontal]
+ステータス:: 200 OK
+コンテンツ:: application/json; charset=UTF-8
+クッキー設定:: あり
+
+.JSON
+[horizontal]
+date_format::
+  value::: 日付の表示形式 `"yyyy/M/d"` 等
+initialized_flag::
+  value::: 初期化済み化のフラグ `"initialized"` 等
+owner::
+  value::: 所有者の名前
+time_format::
+  value::: 時刻の表示形式 `"12hour"` 等
+timeout_to_standby::
+  value::: スリープまでの時間、単位は分？ `"60"` 等
+timezone::
+  value::: タイムゾーン JST(+9000)の場合は `"Asia/Tokyo"`
+
+
+== GET /folders/%エントリーID%/entries
+
+%エントリーID%にはエントリーIDが入ります。トップディレクトリは`root`で固定です。それ以外は取得したエントリーIDが入ります。
+
+ルートディレクトリのパスは"Document"となります。エントリーのパスはそこからの絶対パスです。
+
+=== 要求
+
+.クエリ
+[horizontal]
+order_type:: 表示順 デフォルトは `entry_name_asc`
+offset:: リストのオフセット 最初は `0`
+limit:: リストのエントリー最大数 `50`
+_:: POSIXタイムのミリ秒(接続開始したときの時刻)
+
+=== 応答
+
+エントリーのパスは `Document/` から始まります。
+
+.JSON
+[horizontal]
+count:: エントリーの個数
+entry_list_hash:: エントリーリストのハッシュ値 ID.リビジョン.0
+entry_list:: エントリーのリスト、下記の形式がエントリー配列として並ぶ
+  created_date::: エントリーの作成日時 IOS 8601日時形式
+  entry_id::: エントリーのID UUID形式 (rootを除く)
+  entry_name::: エントリーの名前 例: `"Samples"`
+  entry_path::: エントリーのパス 例: `"Document/Samples"`
+  entry_type::: エントリーの種類 ディレクトリは`"folder"
+  is_new::: 新規化のフラグ `"false"`
+  parent_folder_id::: 親ディレクトリのID
+
+=== GET /documents/%エントリーID%
+
+=== GET /documents/%エントリーID%/file
+
+=== GET /resolve/entry/%エントリーパス%
 
 == その他の応答
 
