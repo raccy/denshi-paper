@@ -6,6 +6,7 @@ require 'openssl'
 require 'net/http'
 require 'pp'
 require 'thwait'
+require 'stringio'
 
 module WEBrick
   module HTTPServlet
@@ -53,23 +54,24 @@ def run_wrap(address, port: nil, scheme: 'http')
   server.mount_proc('/') do |req, res|
     session_id = (count += 1)
     puts ">>> req #{url} [#{session_id}] #{Time.now} >>>"
-    puts req
+    puts req.to_s
 
     http.start unless http.started?
 
+    # req.path はURLエスケープ済みなので使えない
     http_req = case req.request_method
     when 'GET'
-      Net::HTTP::Get.new(req.path)
+      Net::HTTP::Get.new(req.request_uri.path)
     when 'HEAD'
-      Net::HTTP::Head.new(req.path)
+      Net::HTTP::Head.new(req.request_uri.path)
     when 'POST'
-      Net::HTTP::Post.new(req.path)
+      Net::HTTP::Post.new(req.request_uri.path)
     when 'PUT'
-      Net::HTTP::Put.new(req.path)
+      Net::HTTP::Put.new(req.request_uri.path)
     when 'DELETE'
-      Net::HTTP::Delete.new(req.path)
+      Net::HTTP::Delete.new(req.request_uri.path)
     when 'OPTIONS'
-      Net::HTTP::Options.new(req.path)
+      Net::HTTP::Options.new(req.request_uri.path)
     else
       raise "unsupported method: #{req.request_method}"
     end
@@ -99,11 +101,13 @@ def run_wrap(address, port: nil, scheme: 'http')
     http_res = http.request(http_req)
 
     res.status = http_res.code.to_i
-    res.cookies <<
 
-    http_res.each_name do |name|
+    puts "<<< res #{url} [#{session_id}] #{Time.now} <<<"
+    puts "HTTP/#{http_res.http_version} #{http_res.code} #{http_res.msg}"
+    http_res.each_capitalized_name do |name|
       http_res.get_fields(name).each do |val|
-        if name == 'set-cookie'
+        puts "#{name}: #{val}"
+        if name == 'Set-Cookie'
           res.cookies << WEBrick::Cookie.parse_set_cookie(val)
         else
           res[name] = val
@@ -113,8 +117,8 @@ def run_wrap(address, port: nil, scheme: 'http')
 
     res.body = http_res.body if http_res.body
 
-    puts "<<< res #{url} [#{session_id}] #{Time.now} <<<"
-    puts res
+    puts http_res.body
+    res
   end
 
   Thread.start do

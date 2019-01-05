@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+Vagrant.configure('2') do |config|
+  config.vm.box = 'generic/ubuntu1804'
+  # config.vm.box_check_update = false
+  config.vm.network 'public_network'
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.synced_folder '..', '/vagrant',
+    type: 'rsync',
+    rsync__exclude: ['.git/', 'vendor/', '.bundle', 'tmp']
+  config.vm.provider 'virtualbox' do |vb|
+    vb.cpus = 2
+    vb.memory = 2048
+  end
+  config.vm.provider 'hyperv' do |vb|
+    vb.cpus = 2
+    vb.memory = 2048
+  end
+  config.vm.hostname = 'digitalpaper.local'
+  config.vm.provision 'shell', inline: <<-SHELL
+    apt-get update
+    apt-get upgrade -y
+    apt-get install -y ruby ruby-bundler avahi-utils
+  SHELL
+end
