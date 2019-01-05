@@ -3,6 +3,12 @@
 /tmp/
 /.bundle/
 /vendor/bundle
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
 /tool/.vagrant
 /tool/server.crt
 /tool/server.key
