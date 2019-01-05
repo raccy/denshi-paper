@@ -7,3 +7,5 @@ gem 'faraday'
 gem 'faraday_middleware'
 gem 'hashie'
 gem 'parallel'
+
+gemspec
