@@ -1,6 +1,6 @@
 ---
 "$schema": http://json-schema.org/draft-04/hyper-schema
-title: FIXME - シリアル番号
+title: シリアル番号 - シリアル番号
 description: 機器のシリアル番号
 stability: prototype
 strictProperties: true
@@ -12,74 +12,17 @@ definitions:
     readOnly: true
     type:
     - string
-  id:
-    description: unique identifier of serial_number
-    readOnly: true
-    format: uuid
-    type:
-    - string
-  name:
-    description: unique name of serial_number
-    readOnly: true
-    type:
-    - string
+    pattern: ^[0-9]+$
   identity:
     anyOf:
-    - "$ref": "/schemata/serial_number#/definitions/id"
-    - "$ref": "/schemata/serial_number#/definitions/name"
-  created_at:
-    description: when serial_number was created
-    format: date-time
-    type:
-    - string
-  updated_at:
-    description: when serial_number was updated
-    format: date-time
-    type:
-    - string
+    - "$ref": "/schemata/serial_number#/definitions/value"
 links:
-- description: Create a new serial_number.
-  href: "/serial_numbers"
-  method: POST
-  rel: create
-  schema:
-    properties: {}
-    type:
-    - object
-  title: Create
-- description: Delete an existing serial_number.
-  href: "/serial_numbers/{(%2Fschemata%2Fserial_number%23%2Fdefinitions%2Fidentity)}"
-  method: DELETE
-  rel: destroy
-  title: Delete
-- description: Info for existing serial_number.
-  href: "/serial_numbers/{(%2Fschemata%2Fserial_number%23%2Fdefinitions%2Fidentity)}"
+- description: シリアル番号を取得します。
+  href: "/register/serial_numbers"
   method: GET
   rel: self
-  title: Info
-- description: List existing serial_numbers.
-  href: "/serial_numbers"
-  method: GET
-  rel: instances
-  title: List
-- description: Update an existing serial_number.
-  href: "/serial_numbers/{(%2Fschemata%2Fserial_number%23%2Fdefinitions%2Fidentity)}"
-  method: PATCH
-  rel: update
-  schema:
-    properties: {}
-    type:
-    - object
-  title: Update
+  title: 取得
 properties:
   value:
     "$ref": "/schemata/serial_number#/definitions/value"
-  created_at:
-    "$ref": "/schemata/serial_number#/definitions/created_at"
-  id:
-    "$ref": "/schemata/serial_number#/definitions/id"
-  name:
-    "$ref": "/schemata/serial_number#/definitions/name"
-  updated_at:
-    "$ref": "/schemata/serial_number#/definitions/updated_at"
 id: schemata/serial_number
