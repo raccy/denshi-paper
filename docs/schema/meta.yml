@@ -1,7 +1,7 @@
 ---
-description: Denshi Paper API
-id: denshi_paper
+description: Degital Paper API
+id: degitalpaper
 links:
-- href: https://raccy.github.io/denshi_paper/
+- href: https://digitalpapel.local:8443
   rel: self
-title: Densh Paper
+title: Degital Paper

@@ -6,7 +6,7 @@
   "definitions": {
     "serial_number": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
-      "title": "Serial Number",
+      "title": "FIXME - シリアル番号",
       "description": "機器のシリアル番号",
       "stability": "prototype",
       "strictProperties": true,
@@ -14,9 +14,48 @@
         "object"
       ],
       "definitions": {
-        "test": {
+        "value": {
           "description": "機器のシリアル番号",
           "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "description": "unique identifier of serial_number",
+          "readOnly": true,
+          "format": "uuid",
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "description": "unique name of serial_number",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/serial_number/definitions/id"
+            },
+            {
+              "$ref": "#/definitions/serial_number/definitions/name"
+            }
+          ]
+        },
+        "created_at": {
+          "description": "when serial_number was created",
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        },
+        "updated_at": {
+          "description": "when serial_number was updated",
+          "format": "date-time",
           "type": [
             "string"
           ]
@@ -24,16 +63,70 @@
       },
       "links": [
         {
-          "description": "シリアル番号の取得",
-          "href": "/register/serial_number",
+          "description": "Create a new serial_number.",
+          "href": "/serial_numbers",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Delete an existing serial_number.",
+          "href": "/serial_numbers/{(%23%2Fdefinitions%2Fserial_number%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing serial_number.",
+          "href": "/serial_numbers/{(%23%2Fdefinitions%2Fserial_number%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing serial_numbers.",
+          "href": "/serial_numbers",
           "method": "GET",
           "rel": "instances",
           "title": "List"
+        },
+        {
+          "description": "Update an existing serial_number.",
+          "href": "/serial_numbers/{(%23%2Fdefinitions%2Fserial_number%2Fdefinitions%2Fidentity)}",
+          "method": "PATCH",
+          "rel": "update",
+          "schema": {
+            "properties": {
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Update"
         }
       ],
       "properties": {
-        "hoge": {
-          "$ref": "#/definitions/serial_number/definitions/test"
+        "value": {
+          "$ref": "#/definitions/serial_number/definitions/value"
+        },
+        "created_at": {
+          "$ref": "#/definitions/serial_number/definitions/created_at"
+        },
+        "id": {
+          "$ref": "#/definitions/serial_number/definitions/id"
+        },
+        "name": {
+          "$ref": "#/definitions/serial_number/definitions/name"
+        },
+        "updated_at": {
+          "$ref": "#/definitions/serial_number/definitions/updated_at"
         }
       }
     }
@@ -43,13 +136,13 @@
       "$ref": "#/definitions/serial_number"
     }
   },
-  "description": "Denshi Paper API",
-  "id": "denshi_paper",
+  "description": "Degital Paper API",
+  "id": "degitalpaper",
   "links": [
     {
-      "href": "https://raccy.github.io/denshi_paper/",
+      "href": "https://digitalpapel.local:8443",
       "rel": "self"
     }
   ],
-  "title": "Densh Paper"
+  "title": "Degital Paper"
 }
