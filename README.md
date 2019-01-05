@@ -17,7 +17,7 @@
 
 ## フォルダ構成
 
-* [doc](doc) ドキュメント
+* [docs](docs) ドキュメント
 * [lib](lib) Ruby ライブラリ
 * [bin](bin) Ruby ツール
 * [tool](tool) 解析用のツール
