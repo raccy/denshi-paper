@@ -1,0 +1,55 @@
+{
+  "$schema": "http://interagent.github.io/interagent-hyper-schema",
+  "type": [
+    "object"
+  ],
+  "definitions": {
+    "serial_number": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "Serial Number",
+      "description": "機器のシリアル番号",
+      "stability": "prototype",
+      "strictProperties": true,
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "test": {
+          "description": "機器のシリアル番号",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "シリアル番号の取得",
+          "href": "/register/serial_number",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        }
+      ],
+      "properties": {
+        "hoge": {
+          "$ref": "#/definitions/serial_number/definitions/test"
+        }
+      }
+    }
+  },
+  "properties": {
+    "serial_number": {
+      "$ref": "#/definitions/serial_number"
+    }
+  },
+  "description": "Denshi Paper API",
+  "id": "denshi_paper",
+  "links": [
+    {
+      "href": "https://raccy.github.io/denshi_paper/",
+      "rel": "self"
+    }
+  ],
+  "title": "Densh Paper"
+}
