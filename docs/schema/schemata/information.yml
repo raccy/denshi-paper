@@ -1,0 +1,50 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: 機器情報
+description: 機器の基本情報です。
+stability: production
+strictProperties: true
+type:
+- object
+definitions:
+  device_color:
+    description: 機器の色
+    readOnly: true
+    type: string
+    pattern: ^#[0-9a-fA-F]{6}$
+    example: "#ffffff"
+  model_name:
+    description: 機器のモデル名
+    readOnly: true
+    type: string
+    example: "P01"
+  serial_number:
+    description: 機器のシリアル番号
+    readOnly: true
+    type: string
+    pattern: ^[0-9]+$
+    example: "12345678"
+  sku_code:
+    description: 機器の言語コード？
+    readOnly: true
+    type: string
+    example: "J"
+  identity:
+    anyOf:
+    - "$ref": "/schemata/information#/definitions/serial_number"
+links:
+- description: 機器の基本情報を取得します。
+  href: "/register/information"
+  method: GET
+  rel: self
+  title: 取得
+properties:
+  device_color:
+    "$ref": "/schemata/information#/definitions/device_color"
+  model_name:
+    "$ref": "/schemata/information#/definitions/model_name"
+  serial_number:
+    "$ref": "/schemata/information#/definitions/serial_number"
+  sku_code:
+    "$ref": "/schemata/information#/definitions/sku_code"
+id: schemata/information

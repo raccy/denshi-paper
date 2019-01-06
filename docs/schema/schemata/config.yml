@@ -1,0 +1,86 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: 設定
+description: 機器の設定です。
+stability: production
+strictProperties: true
+type:
+- object
+definitions:
+  date_format:
+    description: 日付の表示形式
+    readOnly: true
+    type: string
+    example: "yyyy/M/d"
+  initialized_flag:
+    description: 初期化済みかのフラグ
+    readOnly: true
+    type: string
+    example: "initialized"
+  owner:
+    description: 所有者の名前
+    readOnly: true
+    type: string
+    example: "owner"
+  time_format:
+    description: 時刻の表示形式
+    readOnly: true
+    type: string
+    example: "12hour"
+  timeout_to_standby:
+    description: スリープまでの時間(分単位)
+    readOnly: true
+    type: string
+    example: "60"
+  timezone:
+    description: タイムゾーン
+    readOnly: true
+    type: string
+    example: "Asia/Tokyo"
+  identity:
+    anyOf:
+    - "$ref": "/schemata/config#/definitions/owner"
+links:
+- description: 設定を取得します。
+  href: "/system/config"
+  method: GET
+  rel: self
+  title: 取得
+properties:
+  data_format:
+    description: 日付表示形式
+    type: object
+    properties:
+      value:
+        "$ref": "/schemata/config#/definitions/date_format"
+  initialized_flag:
+    description: 初期化済みフラグ
+    type: object
+    properties:
+      value:
+        "$ref": "/schemata/config#/definitions/initialized_flag"
+  owner:
+    description: 所有者名
+    type: object
+    properties:
+      value:
+        "$ref": "/schemata/config#/definitions/owner"
+  time_format:
+    description: 時刻表示形式
+    type: object
+    properties:
+      value:
+        "$ref": "/schemata/config#/definitions/time_format"
+  timeout_to_standby:
+    description: スリープ時間
+    type: object
+    properties:
+      value:
+        "$ref": "/schemata/config#/definitions/timeout_to_standby"
+  timezone:
+    description: タイムゾーン
+    type: object
+    properties:
+      value:
+        "$ref": "/schemata/config#/definitions/timezone"
+id: schemata/config

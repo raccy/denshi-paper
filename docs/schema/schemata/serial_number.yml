@@ -1,22 +1,15 @@
 ---
 "$schema": http://json-schema.org/draft-04/hyper-schema
-title: シリアル番号 - シリアル番号
+title: シリアル番号
 description: 機器のシリアル番号
-stability: product
+stability: production
 strictProperties: true
 type:
 - object
 definitions:
-  value:
-    description: 機器のシリアル番号
-    readOnly: true
-    type:
-    - string
-    pattern: ^[0-9]+$
-    example: "12345678"
   identity:
     anyOf:
-    - "$ref": "/schemata/serial_number#/definitions/value"
+    - "$ref": "/schemata/information#/definitions/serial_number"
 links:
 - description: シリアル番号を取得します。
   href: "/register/serial_numbers"
@@ -33,5 +26,5 @@ links:
       - object
 properties:
   value:
-    "$ref": "/schemata/serial_number#/definitions/value"
+    "$ref": "/schemata/information#/definitions/serial_number"
 id: schemata/serial_number

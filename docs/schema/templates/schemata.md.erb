@@ -12,16 +12,25 @@
 ## <a name="resource-<%= resource %>"><%= title %></a>
 
 <%- if schemata['stability'] && !schemata['stability'].empty? %>
-Stability: `<%= schemata['stability'] %>`
+スタビリティー: <%= case schemata['stability']
+  when 'prototype'
+    '試作'
+  when 'development'
+    '開発'
+  when 'production'
+    '製品'
+  else
+    schemata['stability']
+  end %> (`<%= schemata['stability'] %>`)
 <%- end -%>
 
 <%= schemata['description'] %>
 <%- end -%>
 
 <%- if schemata['properties'] && !schemata['properties'].empty? %>
-### Attributes
+### 属性
 
-| Name | Type | Description | Example |
+| 名前 | 型 | 説明 | 例 |
 | ------- | ------- | ------- | ------- |
 <%- refs = extract_schemata_refs(schema, schemata['properties']).map {|v| v && v.split("/")} %>
 <%- extract_attributes(schema, schemata['properties']).each_with_index do |(key, type, description, example), i| %>

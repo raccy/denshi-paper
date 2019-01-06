@@ -1,0 +1,42 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: 認証
+description: |
+  認証情報です。
+  **ノンスはデコードしません。**ハッシュアルゴリズムにはSHA256を使用し、クライアントの秘密鍵で署名します。Rubyで書いた場合、 `Base64.strict_encode64(pkey.sign('sha256', nonce))` となります。
+stability: production
+strictProperties: true
+type:
+- object
+definitions:
+  client_id:
+    description: クライアントのID
+    readOnly: true
+    format: uuid
+    type: string
+  nonce_signed:
+    description: ノンスの署名(256バイト)の改行無しBase64エンコード(344文字)
+    readOnly: true
+    type: string
+    pattern: ^[A-Za-z0-9+\/]{342}==$
+    example: "ABCD....89=="
+  identity:
+    anyOf:
+    - "$ref": "/schemata/auth#/definitions/client_id"
+links:
+- description: 認証を行います。
+  href: "/auth"
+  method: PUT
+  rel: empty
+  schema:
+    "$ref": "/schemata/auth"
+  title: 認証
+properties:
+  client_id:
+    "$ref": "/schemata/auth#/definitions/client_id"
+  nonce_signed:
+    "$ref": "/schemata/auth#/definitions/nonce_signed"
+required:
+  - client_id
+  - nonce_signed
+id: schemata/auth

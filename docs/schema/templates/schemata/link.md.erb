@@ -16,19 +16,19 @@
     required, optional = Prmd::Link.new(link).required_and_optional_parameters
   %>
   <%- unless required.empty? %>
-#### Required Parameters
+#### 必須パラメーター
 
 <%= link_schema_properties_template.result(params: required, schema: schema, options: options) %>
 
   <%- end %>
   <%- unless optional.empty? %>
-#### Optional Parameters
+#### オプションパラメーター
 
 <%= link_schema_properties_template.result(params: optional, schema: schema, options: options) %>
   <%- end %>
 <%- end %>
 
-#### Curl Example
+#### curl 実行例
 
 <%=
   curl_options = options.dup
@@ -44,7 +44,7 @@
   })
 %>
 
-#### Response Example
+#### レスポンス例
 
 ```
 <%- if response_example %>
@@ -54,8 +54,10 @@ HTTP/1.1 <%=
   case link['rel']
   when 'create'
     '201 Created'
-  when 'empty'
+  when 'accept'
     '202 Accepted'
+  when 'empty'
+    '204 No Content'
   else
     '200 OK'
   end %>
