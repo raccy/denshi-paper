@@ -4,11 +4,134 @@
     "object"
   ],
   "definitions": {
+    "document": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "DOCUMENT - Document",
+      "description": "FIXME",
+      "stability": "prototype",
+      "strictProperties": true,
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "id": {
+          "description": "unique identifier of document",
+          "readOnly": true,
+          "format": "uuid",
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "description": "unique name of document",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/document/definitions/id"
+            },
+            {
+              "$ref": "#/definitions/document/definitions/name"
+            }
+          ]
+        },
+        "created_at": {
+          "description": "when document was created",
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        },
+        "updated_at": {
+          "description": "when document was updated",
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new document.",
+          "href": "/documents",
+          "method": "PUT",
+          "rel": "create",
+          "schema": {
+            "properties": {
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Create",
+          "mediaType": "null",
+          "targetSchema": {
+            "additionalProperties": false,
+            "type": [
+              "object"
+            ]
+          }
+        },
+        {
+          "description": "Delete an existing document.",
+          "href": "/documents/{(%23%2Fdefinitions%2Fdocument%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing document.",
+          "href": "/documents/{(%23%2Fdefinitions%2Fdocument%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing documents.",
+          "href": "/documents",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        },
+        {
+          "description": "Update an existing document.",
+          "href": "/documents/{(%23%2Fdefinitions%2Fdocument%2Fdefinitions%2Fidentity)}",
+          "method": "PATCH",
+          "rel": "update",
+          "schema": {
+            "properties": {
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Update"
+        }
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/definitions/document/definitions/created_at"
+        },
+        "id": {
+          "$ref": "#/definitions/document/definitions/id"
+        },
+        "name": {
+          "$ref": "#/definitions/document/definitions/name"
+        },
+        "updated_at": {
+          "$ref": "#/definitions/document/definitions/updated_at"
+        }
+      }
+    },
     "serial_number": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
       "title": "シリアル番号 - シリアル番号",
       "description": "機器のシリアル番号",
-      "stability": "prototype",
+      "stability": "product",
       "strictProperties": true,
       "type": [
         "object"
@@ -20,7 +143,8 @@
           "type": [
             "string"
           ],
-          "pattern": "^[0-9]+$"
+          "pattern": "^[0-9]+$",
+          "example": "12345678"
         },
         "identity": {
           "anyOf": [
@@ -36,7 +160,20 @@
           "href": "/register/serial_numbers",
           "method": "GET",
           "rel": "self",
-          "title": "取得"
+          "title": "取得",
+          "schema": {
+            "properties": {
+              "_": {
+                "description": "UNIXエポックからの経過時間(ミリ秒)",
+                "type": [
+                  "integer"
+                ]
+              }
+            },
+            "type": [
+              "object"
+            ]
+          }
         }
       ],
       "properties": {
@@ -47,6 +184,9 @@
     }
   },
   "properties": {
+    "document": {
+      "$ref": "#/definitions/document"
+    },
     "serial_number": {
       "$ref": "#/definitions/serial_number"
     }
@@ -56,10 +196,6 @@
   "links": [
     {
       "href": "https://digitalpapel.local:8443",
-      "rel": "self"
-    },
-    {
-      "href": "http://digitalpapel.local:8080",
       "rel": "self"
     }
   ],

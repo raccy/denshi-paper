@@ -8,4 +8,8 @@ gem 'faraday_middleware'
 gem 'hashie'
 gem 'parallel'
 
+group :development do
+  gem 'prmd'
+end
+
 gemspec

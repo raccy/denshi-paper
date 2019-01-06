@@ -2,7 +2,7 @@
 "$schema": http://json-schema.org/draft-04/hyper-schema
 title: シリアル番号 - シリアル番号
 description: 機器のシリアル番号
-stability: prototype
+stability: product
 strictProperties: true
 type:
 - object
@@ -13,6 +13,7 @@ definitions:
     type:
     - string
     pattern: ^[0-9]+$
+    example: "12345678"
   identity:
     anyOf:
     - "$ref": "/schemata/serial_number#/definitions/value"
@@ -22,6 +23,14 @@ links:
   method: GET
   rel: self
   title: 取得
+  schema:
+    properties:
+      _:
+        description: UNIXエポックからの経過時間(ミリ秒)
+        type:
+        - integer
+    type:
+      - object
 properties:
   value:
     "$ref": "/schemata/serial_number#/definitions/value"

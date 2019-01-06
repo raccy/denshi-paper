@@ -26,9 +26,12 @@ namespace :schema do
   end
 
   Prmd::RakeTasks::Doc.new do |t|
+    t.options[:template] = "#{schema_root}/templates"
+    t.options[:settings] = "#{schema_root}/config.yml"
     t.options[:prepend] = ["#{schema_root}/overview.md"]
     t.files = { "#{schema_root}/schema.json" => "#{schema_root}/schema.md" }
   end
+
 end
 
 task schema: ['schema:combine', 'schema:verify', 'schema:doc']
