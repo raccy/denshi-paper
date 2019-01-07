@@ -1,0 +1,29 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: ノンス
+description: |
+  認証に使用するノンスです。
+  Base64で使用される文字のみで構成されますが、デコードはされません。
+stability: production
+strictProperties: true
+type:
+- object
+definitions:
+  nonce:
+    description: ノンス(64バイトBase64文字列)
+    readOnly: true
+    type: string
+    pattern: ^[A-Za-z0-9+\/]$
+  identity:
+    anyOf:
+    - "$ref": "/schemata/nonce#/definitions/nonce"
+links:
+- description: ノンスを取得します。
+  href: "/auth/nonce/{(%2Fschemata%2Fauth%23%2Fdefinitions%2Fclient_id)}"
+  method: GET
+  rel: self
+  title: 取得
+properties:
+  nonce:
+    "$ref": "/schemata/nonce#/definitions/nonce"
+id: schemata/nonce

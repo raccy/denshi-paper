@@ -30,7 +30,7 @@ links:
   rel: empty
   schema:
     "$ref": "/schemata/auth"
-  title: 認証
+  title: 実施
 properties:
   client_id:
     "$ref": "/schemata/auth#/definitions/client_id"

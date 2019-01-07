@@ -1,0 +1,78 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: FIXME - Entries
+description: FIXME
+stability: prototype
+strictProperties: true
+type:
+- object
+definitions:
+  id:
+    description: unique identifier of entries
+    readOnly: true
+    format: uuid
+    type:
+    - string
+  name:
+    description: unique name of entries
+    readOnly: true
+    type:
+    - string
+  identity:
+    anyOf:
+    - "$ref": "/schemata/entries#/definitions/id"
+    - "$ref": "/schemata/entries#/definitions/name"
+  created_at:
+    description: when entries was created
+    format: date-time
+    type:
+    - string
+  updated_at:
+    description: when entries was updated
+    format: date-time
+    type:
+    - string
+links:
+- description: Create a new entries.
+  href: "/entriess"
+  method: POST
+  rel: create
+  schema:
+    properties: {}
+    type:
+    - object
+  title: Create
+- description: Delete an existing entries.
+  href: "/entriess/{(%2Fschemata%2Fentries%23%2Fdefinitions%2Fidentity)}"
+  method: DELETE
+  rel: destroy
+  title: Delete
+- description: Info for existing entries.
+  href: "/entriess/{(%2Fschemata%2Fentries%23%2Fdefinitions%2Fidentity)}"
+  method: GET
+  rel: self
+  title: Info
+- description: List existing entriess.
+  href: "/entriess"
+  method: GET
+  rel: instances
+  title: List
+- description: Update an existing entries.
+  href: "/entriess/{(%2Fschemata%2Fentries%23%2Fdefinitions%2Fidentity)}"
+  method: PATCH
+  rel: update
+  schema:
+    properties: {}
+    type:
+    - object
+  title: Update
+properties:
+  created_at:
+    "$ref": "/schemata/entries#/definitions/created_at"
+  id:
+    "$ref": "/schemata/entries#/definitions/id"
+  name:
+    "$ref": "/schemata/entries#/definitions/name"
+  updated_at:
+    "$ref": "/schemata/entries#/definitions/updated_at"
+id: schemata/entries

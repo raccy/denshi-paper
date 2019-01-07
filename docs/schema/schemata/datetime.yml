@@ -1,0 +1,30 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: 日時
+description: 日時を表します。
+stability: production
+strictProperties: true
+type: object
+definitions:
+  datetime:
+    description: 日時
+    readOnly: true
+    format: date-time
+    type: string
+  identity:
+    anyOf:
+    - "$ref": "/schemata/datetime#/definitions/datetime"
+links:
+- description: 日時を設定します。
+  href: "/system/config/datetime"
+  method: PUT
+  rel: empty
+  schema:
+    "$ref": "/schemata/datetime"
+  title: 設定
+properties:
+  value:
+    "$ref": "/schemata/datetime#/definitions/datetime"
+required:
+- value
+id: schemata/datetime
