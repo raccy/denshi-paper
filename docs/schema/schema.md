@@ -1,5 +1,7 @@
 # 電子ペーパー API
 
+**このドキュメントは不完全です。**
+
 
 ## <a name="resource-api_version">APIバージョン</a>
 
