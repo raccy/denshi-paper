@@ -191,69 +191,33 @@ HTTP/1.1 204 No Content
 
 
 
-## <a name="resource-entries">Entries</a>
+## <a name="resource-entries">エントリーリスト</a>
 
-スタビリティー: 試作 (`prototype`)
+スタビリティー: 製品 (`production`)
 
-FIXME
+エントリーのリストです。
 
 ### 属性
 
 | 名前 | 型 | 説明 | 例 |
 | ------- | ------- | ------- | ------- |
-| **created_at** | *date-time* | when entries was created | `"2015-01-01T12:00:00Z"` |
-| **id** | *uuid* | unique identifier of entries | `"01234567-89ab-cdef-0123-456789abcdef"` |
-| **name** | *string* | unique name of entries | `"example"` |
-| **updated_at** | *date-time* | when entries was updated | `"2015-01-01T12:00:00Z"` |
+| **count** | *integer* | エントリーの個数<br/> **Range:** `0 <= value` | `42` |
+| **entry_list** | *array* | エントリーのリスト | `[{"created_date":"2015-01-01T12:00:00Z","entry_id":"01234567-89ab-cdef-0123-456789abcdef","entry_name":"example","entry_path":"Document/example.pdf","entry_type":"document","is_new":true,"parent_folder_id":"01234567-89ab-cdef-0123-456789abcdef"}]` |
+| **entry_list_hash** | *string* | リストのハッシュ値 | `"example"` |
 
-### <a name="link-POST-entries-/entriess">Entries Create</a>
+### <a name="link-GET-entries-/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}/entriess">エントリーリスト 取得</a>
 
-Create a new entries.
-
-```
-POST /entriess
-```
-
-
-#### curl 実行例
-
-```bash
-$ curl -n -X POST https://digitalpapel.local:8443/entriess \
-  -d '{
-}' \
-  -H "Content-Type: application/json"
-```
-
-
-#### レスポンス例
+リストの一覧
 
 ```
-HTTP/1.1 201 Created
-```
-
-```json
-{
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
-}
-```
-
-### <a name="link-DELETE-entries-/entriess/{(%23%2Fdefinitions%2Fentries%2Fdefinitions%2Fidentity)}">Entries Delete</a>
-
-Delete an existing entries.
-
-```
-DELETE /entriess/{entries_id_or_name}
+GET /folders/{entry_id}/entriess
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n -X DELETE https://digitalpapel.local:8443/entriess/$ENTRIES_ID_OR_NAME \
-  -H "Content-Type: application/json"
+$ curl -n https://digitalpapel.local:8443/folders/$ENTRY_ID/entriess
 ```
 
 
@@ -265,108 +229,19 @@ HTTP/1.1 200 OK
 
 ```json
 {
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
-}
-```
-
-### <a name="link-GET-entries-/entriess/{(%23%2Fdefinitions%2Fentries%2Fdefinitions%2Fidentity)}">Entries Info</a>
-
-Info for existing entries.
-
-```
-GET /entriess/{entries_id_or_name}
-```
-
-
-#### curl 実行例
-
-```bash
-$ curl -n https://digitalpapel.local:8443/entriess/$ENTRIES_ID_OR_NAME
-```
-
-
-#### レスポンス例
-
-```
-HTTP/1.1 200 OK
-```
-
-```json
-{
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
-}
-```
-
-### <a name="link-GET-entries-/entriess">Entries List</a>
-
-List existing entriess.
-
-```
-GET /entriess
-```
-
-
-#### curl 実行例
-
-```bash
-$ curl -n https://digitalpapel.local:8443/entriess
-```
-
-
-#### レスポンス例
-
-```
-HTTP/1.1 200 OK
-```
-
-```json
-[
-  {
-    "created_at": "2015-01-01T12:00:00Z",
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "example",
-    "updated_at": "2015-01-01T12:00:00Z"
-  }
-]
-```
-
-### <a name="link-PATCH-entries-/entriess/{(%23%2Fdefinitions%2Fentries%2Fdefinitions%2Fidentity)}">Entries Update</a>
-
-Update an existing entries.
-
-```
-PATCH /entriess/{entries_id_or_name}
-```
-
-
-#### curl 実行例
-
-```bash
-$ curl -n -X PATCH https://digitalpapel.local:8443/entriess/$ENTRIES_ID_OR_NAME \
-  -d '{
-}' \
-  -H "Content-Type: application/json"
-```
-
-
-#### レスポンス例
-
-```
-HTTP/1.1 200 OK
-```
-
-```json
-{
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
+  "count": 42,
+  "entry_list": [
+    {
+      "created_date": "2015-01-01T12:00:00Z",
+      "entry_id": "01234567-89ab-cdef-0123-456789abcdef",
+      "entry_name": "example",
+      "entry_path": "Document/example.pdf",
+      "entry_type": "document",
+      "is_new": true,
+      "parent_folder_id": "01234567-89ab-cdef-0123-456789abcdef"
+    }
+  ],
+  "entry_list_hash": "example"
 }
 ```
 
@@ -387,7 +262,7 @@ HTTP/1.1 200 OK
 | **entry_id** | *uuid* | エントリーのID<br/> **pattern:** `root` | `"01234567-89ab-cdef-0123-456789abcdef"` |
 | **entry_name** | *string* | エントリーの名前 | `"example"` |
 | **entry_path** | *string* | エントリーのパス | `"Document/example.pdf"` |
-| **entry_type** | *string* | エントリーのタイプ<br/> **pattern:** `folderdocument` | `"document"` |
+| **entry_type** | *string* | エントリーのタイプ<br/> **pattern:** `folder|document` | `"document"` |
 | **is_new** | *boolean* | 新規フラグ | `true` |
 | **parent_folder_id** | *uuid* | 親フォルダーのID | `"01234567-89ab-cdef-0123-456789abcdef"` |
 
@@ -779,3 +654,5 @@ HTTP/1.1 200 OK
   "value": "12345678"
 }
 ```
+
+

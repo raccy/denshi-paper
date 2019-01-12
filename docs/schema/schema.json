@@ -298,25 +298,34 @@
     },
     "entries": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
-      "title": "FIXME - Entries",
-      "description": "FIXME",
-      "stability": "prototype",
+      "title": "エントリーリスト",
+      "description": "エントリーのリストです。",
+      "stability": "production",
       "strictProperties": true,
       "type": [
         "object"
       ],
       "definitions": {
-        "id": {
-          "description": "unique identifier of entries",
+        "count": {
+          "description": "エントリーの個数",
           "readOnly": true,
-          "format": "uuid",
           "type": [
-            "string"
-          ]
+            "integer"
+          ],
+          "minimum": 0
         },
-        "name": {
-          "description": "unique name of entries",
+        "entry_list": {
+          "description": "エントリーのリスト",
           "readOnly": true,
+          "type": [
+            "array"
+          ],
+          "items": {
+            "$ref": "#/definitions/entry"
+          }
+        },
+        "entry_list_hash": {
+          "description": "リストのハッシュ値",
           "type": [
             "string"
           ]
@@ -324,91 +333,29 @@
         "identity": {
           "anyOf": [
             {
-              "$ref": "#/definitions/entries/definitions/id"
-            },
-            {
-              "$ref": "#/definitions/entries/definitions/name"
+              "$ref": "#/definitions/entries/definitions/entry_list_hash"
             }
-          ]
-        },
-        "created_at": {
-          "description": "when entries was created",
-          "format": "date-time",
-          "type": [
-            "string"
-          ]
-        },
-        "updated_at": {
-          "description": "when entries was updated",
-          "format": "date-time",
-          "type": [
-            "string"
           ]
         }
       },
       "links": [
         {
-          "description": "Create a new entries.",
-          "href": "/entriess",
-          "method": "POST",
-          "rel": "create",
-          "schema": {
-            "properties": {
-            },
-            "type": [
-              "object"
-            ]
-          },
-          "title": "Create"
-        },
-        {
-          "description": "Delete an existing entries.",
-          "href": "/entriess/{(%23%2Fdefinitions%2Fentries%2Fdefinitions%2Fidentity)}",
-          "method": "DELETE",
-          "rel": "destroy",
-          "title": "Delete"
-        },
-        {
-          "description": "Info for existing entries.",
-          "href": "/entriess/{(%23%2Fdefinitions%2Fentries%2Fdefinitions%2Fidentity)}",
+          "description": "リストの一覧",
+          "href": "/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}/entriess",
           "method": "GET",
           "rel": "self",
-          "title": "Info"
-        },
-        {
-          "description": "List existing entriess.",
-          "href": "/entriess",
-          "method": "GET",
-          "rel": "instances",
-          "title": "List"
-        },
-        {
-          "description": "Update an existing entries.",
-          "href": "/entriess/{(%23%2Fdefinitions%2Fentries%2Fdefinitions%2Fidentity)}",
-          "method": "PATCH",
-          "rel": "update",
-          "schema": {
-            "properties": {
-            },
-            "type": [
-              "object"
-            ]
-          },
-          "title": "Update"
+          "title": "取得"
         }
       ],
       "properties": {
-        "created_at": {
-          "$ref": "#/definitions/entries/definitions/created_at"
+        "count": {
+          "$ref": "#/definitions/entries/definitions/count"
         },
-        "id": {
-          "$ref": "#/definitions/entries/definitions/id"
+        "entry_list": {
+          "$ref": "#/definitions/entries/definitions/entry_list"
         },
-        "name": {
-          "$ref": "#/definitions/entries/definitions/name"
-        },
-        "updated_at": {
-          "$ref": "#/definitions/entries/definitions/updated_at"
+        "entry_list_hash": {
+          "$ref": "#/definitions/entries/definitions/entry_list_hash"
         }
       }
     },
@@ -487,6 +434,86 @@
               "$ref": "#/definitions/entry/definitions/path"
             }
           ]
+        },
+        "author": {
+          "description": "著者(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "太宰 治"
+        },
+        "current_page": {
+          "description": "現在のページ(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "1"
+        },
+        "document_type": {
+          "description": "ドキュメントの種類(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "normal"
+        },
+        "file_revision": {
+          "description": "ファイルリビジョン(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "ffffffffffff.1.0"
+        },
+        "file_size": {
+          "description": "ファイルサイズ(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "1234567"
+        },
+        "mime_type": {
+          "description": "ファイルの種類(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "application/pdf"
+        },
+        "modified_date": {
+          "description": "変更した日時(ドキュメントのみ)",
+          "readOnly": true,
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        },
+        "reading_date": {
+          "description": "読んだ日時(ドキュメントのみ)",
+          "readOnly": true,
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        },
+        "title": {
+          "description": "題名(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "人間失格"
+        },
+        "total_page": {
+          "description": "総ページ数(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "42"
         }
       },
       "links": [
@@ -527,7 +554,15 @@
         "parent_folder_id": {
           "$ref": "#/definitions/entry/definitions/parent_folder_id"
         }
-      }
+      },
+      "required": [
+        "created_date",
+        "entry_id",
+        "entry_name",
+        "entry_path",
+        "entry_type",
+        "is_new"
+      ]
     },
     "file": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
