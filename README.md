@@ -17,7 +17,7 @@
 
 ## フォルダ構成
 
-* [docs](docs) ドキュメント
+* [docs](docs) [ドキュメント](https://raccy.github.io/denshi_paper/)
 * [lib](lib) Ruby ライブラリ
 * [bin](bin) Ruby ツール
 * [tool](tool) 解析用のツール
