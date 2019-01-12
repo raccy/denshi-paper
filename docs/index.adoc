@@ -1,5 +1,0 @@
-= ドキュメント一覧
-
-* link:api.adoc[API仕様書]
-* link:app.adoc[アプリケーションの動作]
-* link:hack.adoc[ハッキング]
