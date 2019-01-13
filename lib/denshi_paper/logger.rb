@@ -9,7 +9,7 @@ module DenshiPaper
 
   def self.logger
     @logger ||= Logger.new($stderr).tap do |logger|
-      logger.level = $DEBUG ? Logger::INFO : Logger::DEBUG
+      logger.level = $DEBUG ? Logger::DEBUG : Logger::INFO
     end
   end
 end
