@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
 module DenshiPaper
-  class Error < StandardError; end
+  class InvalidDataError < StandardError
+  end
 end

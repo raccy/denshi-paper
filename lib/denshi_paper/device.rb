@@ -4,6 +4,8 @@ require 'ipaddr'
 require 'faraday'
 require 'faraday_middleware'
 
+require 'denshi_paper/error'
+
 module DenshiPaper
   class Device
     DEFAULT_HOSTNAME = 'digitalpaper.local'
@@ -46,12 +48,12 @@ module DenshiPaper
     end
 
     def serial_number
-      @serial_number ||= begin
-        data = connect.get(API::Path::SERIAL_NUMBER).body['value']
+      @serial_number ||= connect.get(API::Path::SERIAL_NUMBER).body['value']
+        .tap do |data|
         unless /\A\d+\z/.match?(data)
-          raise "Invalid serial number. serial_number: #{data}"
+          raise InvalidDataError, 'Invalid serial number. ' \
+            "serial_number: #{data}"
         end
-        data
       end
     end
 
@@ -68,24 +70,21 @@ module DenshiPaper
     end
 
     private def information
-      @information ||= begin
-        data = connect.get(API::Path::INFORMATION).body
+      @information ||= connect.get(API::Path::INFORMATION).body.tap do |data|
         unless serial_number == data['serial_number']
-          raise 'Serial numbers do not match. ' \
+          raise InvalidDataError, 'Serial numbers do not match. ' \
             "information.serial_number: #{data.serial_number}, " \
             "but expected: #{@seirial_number}"
         end
-        data
       end
     end
 
     def api_version
-      @api_version ||= begin
-        data = connect.get(API::Path::API_VERSION).body['value']
-        unless API::KNOWN_API_VERSIONS.include?(data)
-          raise "Unknown api version. api_version: #{data}"
-        end
-        data
+      @api_version ||= connect.get(API::Path::API_VERSION).body['value']
+        .tap do |data|
+          unless API::KNOWN_API_VERSIONS.include?(data)
+            raise "Unknown api version. api_version: #{data}"
+          end
       end
     end
   end

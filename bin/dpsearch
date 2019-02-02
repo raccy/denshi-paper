@@ -11,6 +11,6 @@ if list.empty?
   puts 'Device not found.'
 else
   list.each do |device|
-    puts "#{device.serial_number} #{device.address}"
+    puts "#{device.serial_number} #{device.address} #{device.model_name}"
   end
 end
