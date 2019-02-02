@@ -82,9 +82,9 @@ module DenshiPaper
     def api_version
       @api_version ||= connect.get(API::Path::API_VERSION).body['value']
         .tap do |data|
-          unless API::KNOWN_API_VERSIONS.include?(data)
-            raise "Unknown api version. api_version: #{data}"
-          end
+        unless API::KNOWN_API_VERSIONS.include?(data)
+          raise "Unknown api version. api_version: #{data}"
+        end
       end
     end
   end
