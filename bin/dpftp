@@ -10,24 +10,39 @@ end
 
 require 'optparse'
 
-opt = OptionParser.new
-opt.version = DenshiPaper::VERSION
+if $0 == __FILE__
+  opt = OptionParser.new
+  opt.version = DenshiPaper::VERSION
 
-key = nil
-host = nil
-serial_number = nil
+  workspace = nil
+  client_id = nil
+  private_key_file = nil
+  private_key_pass = nil
+  serial_number = nil
 
-opt.on('-k', '--key=PRIVATE_KEY', 'private key for the device') {}
-opt.on('-h', '--host=HOST_OR_ADDRESS', 'host or IP address of VVdevice') {}
-opt.on('-s', '--serial=SERIAL_NUMBER', 'serial number of device') {}
-opt.on('-d', '--debgu', 'debug mode') { |v| $DEBUG = v }
+  opt.on('-w', '--workspace=WORKSPACE',
+    'warkspace for the device') { |v| workspace = v }
+  opt.on('-i', '--id=CLIENT_UUID',
+    'client uuid for the device') { |v| client_id = v }
+  opt.on('-k', '--key=PRIVATE_KEY_FILE',
+    'private key file for the device') { |v| private_key_file = v }
+  opt.on('-p', '--pass=PRIVATE_KEY_PASS',
+    'private key passphrase for the device') { |v| private_key_pass = v }
+  opt.on('-s', '--serial=SERIAL_NUMBER',
+    'serial number of the device') { |v| serial_number = v }
+  opt.on('-d', '--debug', 'debug mode') { |v| $DEBUG = v }
 
-# disc = DenshiPaper::Discovery.new
-# list = disc.search_device
-# if list.empty?
-#   puts 'Device not found.'
-# else
-#   list.each do |device|
-#     puts "#{device.serial_number} #{device.address}"
-#   end
-# end
+  if workspace
+    client_id ||= IO.read(File.join(workspace, 'deviceid.dat')).strip
+    private_key_file ||= File.join(workspace, 'privatekey.dat')
+    serial_number ||= IO.read(File.join(workspace, 'workspace.dat')).strip
+  end
+  private_key = IO.read(private_key_file)
+
+  disc = DenshiPaper::Discovery.new
+  device = disc.get(serial_number)
+  client = DenshiPaper::Client.new(device, client_id, private_key, pass)
+  client.root_folder.each do |entry|
+    puts "#{entry.type}: #{entry.name}"
+  end
+end

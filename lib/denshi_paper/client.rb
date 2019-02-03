@@ -9,8 +9,8 @@ module DenshiPaper
   class Client
     attr_reader :client_id, :private_key
 
-    def initialize(client_id, private_key, pass = nil)
-      @address = address
+    def initialize(device, client_id, private_key, pass = nil)
+      @device = device
       @client_id = client_id
       @private_key =
         if private_key.is_a?(OpenSSL::PKey::RSA)
@@ -20,9 +20,17 @@ module DenshiPaper
         end
     end
 
-    def register_device(device)
-
+    private def connect
+      @connect ||= Faraday.new(@device.https_url) do |faraday|
+        faraday.request :json
+        faraday.response :logger, DenshiPaper.logger
+        faraday.response :json, content_type: /\bjson$/,
+                                parser_options: { symbolize_names: true }
+        faraday.response :raise_error
+        faraday.adapter  :net_http
+      end
     end
+
     def get_information_by_host(host)
       url = URI::HTTP.build(host: host, port: API::HTTP_PORT)
       conn = Faraday.new(url) do |faraday|

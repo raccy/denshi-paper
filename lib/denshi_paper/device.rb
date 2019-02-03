@@ -40,15 +40,17 @@ module DenshiPaper
 
     private def connect
       @connect ||= Faraday.new(http_url) do |faraday|
+        faraday.request :json
         faraday.response :logger, DenshiPaper.logger
-        faraday.response :json, content_type: /\bjson$/
+        faraday.response :json, content_type: /\bjson$/,
+                                parser_options: { symbolize_names: true }
         faraday.response :raise_error
-        faraday.adapter  Faraday.default_adapter
+        faraday.adapter  :net_http
       end
     end
 
     def serial_number
-      @serial_number ||= connect.get(API::Path::SERIAL_NUMBER).body['value']
+      @serial_number ||= connect.get(API::Path::SERIAL_NUMBER).body[:value]
         .tap do |data|
         unless /\A\d+\z/.match?(data)
           raise InvalidDataError, 'Invalid serial number. ' \
@@ -58,20 +60,20 @@ module DenshiPaper
     end
 
     def device_color
-      @device_color ||= information['device_color']
+      @device_color ||= information[:device_color]
     end
 
     def model_name
-      @model_name ||= information['model_name']
+      @model_name ||= information[:model_name]
     end
 
     def sku_code
-      @sku_code ||= information['sku_code']
+      @sku_code ||= information[:sku_code]
     end
 
     private def information
       @information ||= connect.get(API::Path::INFORMATION).body.tap do |data|
-        unless serial_number == data['serial_number']
+        unless serial_number == data[:serial_number]
           raise InvalidDataError, 'Serial numbers do not match. ' \
             "information.serial_number: #{data.serial_number}, " \
             "but expected: #{@seirial_number}"
@@ -80,7 +82,7 @@ module DenshiPaper
     end
 
     def api_version
-      @api_version ||= connect.get(API::Path::API_VERSION).body['value']
+      @api_version ||= connect.get(API::Path::API_VERSION).body[:value]
         .tap do |data|
         unless API::KNOWN_API_VERSIONS.include?(data)
           raise "Unknown api version. api_version: #{data}"
