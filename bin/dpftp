@@ -32,15 +32,21 @@ if $0 == __FILE__
     'serial number of the device') { |v| serial_number = v }
   opt.on('-d', '--debug', 'debug mode') { |v| $DEBUG = v }
 
+  opt.parse!(ARGV)
+
   if workspace
     client_id ||= IO.read(File.join(workspace, 'deviceid.dat')).strip
     private_key_file ||= File.join(workspace, 'privatekey.dat')
     serial_number ||= IO.read(File.join(workspace, 'workspace.dat')).strip
   end
+  unless client_id && private_key_file && serial_number
+    puts opt.help
+    exit
+  end
   private_key = IO.read(private_key_file)
 
   disc = DenshiPaper::Discovery.new
-  device = disc.get(serial_number)
+  device = disc.search_device(serial_number)
   client = DenshiPaper::Client.new(device, client_id, private_key,
     private_key_pass)
   client.root_folder.each do |entry|

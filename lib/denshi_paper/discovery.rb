@@ -24,7 +24,15 @@ module DenshiPaper
       @devices = []
     end
 
-    def search_device
+    def search_device(serial_number = nil)
+      if serial_number
+        search_device_map[serial_number]
+      else
+        search_device_map.values
+      end
+    end
+
+    private def search_device_map
       devices = search_mdns_service.map do |host|
         Device.new(host[:address], hostname: host[:hostname])
       end
@@ -39,7 +47,7 @@ module DenshiPaper
           DenshiPaper.logger.warn(e.message)
           [nil, nil]
         end
-      end.to_h.compact.values
+      end.to_h.compact
     end
 
     def search_mdns_service
