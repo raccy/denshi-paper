@@ -41,7 +41,8 @@ if $0 == __FILE__
 
   disc = DenshiPaper::Discovery.new
   device = disc.get(serial_number)
-  client = DenshiPaper::Client.new(device, client_id, private_key, pass)
+  client = DenshiPaper::Client.new(device, client_id, private_key,
+    private_key_pass)
   client.root_folder.each do |entry|
     puts "#{entry.type}: #{entry.name}"
   end
