@@ -9,9 +9,6 @@ require 'faraday'
 require 'faraday_middleware'
 require 'parallel'
 
-require 'denshi_paper/api'
-require 'denshi_paper/device'
-
 module DenshiPaper
   FUJITSU_DIGITAL_PAPER_SERVICE = 'dp_fujitsu'
   # TODO: Sony device
@@ -51,17 +48,15 @@ module DenshiPaper
     end
 
     def search_mdns_service
-      rdri = Resolv::DNS::Resource::IN
       srv_name = "_#{@service}._tcp.local."
-      mdns = Resolv::MDNS.new
-      mdns.timeouts = @timeout
-      mdns.getresources(srv_name, rdri::PTR)
+      Resolv::DefaultMDNS.getresources(srv_name, Resolv::DNS::Resource::IN::PTR)
         .map(&:name).uniq
-        .flat_map { |name| mdns.getresources(name, rdri::SRV) }
+        .flat_map { |name| Resolv::DefaultMDNS.getresources(name,
+                                             Resolv::DNS::Resource::IN::SRV) }
         .map(&:target).uniq
         .flat_map do |target|
-          [rdri::A, rdri::AAAA]
-            .flat_map { |type| mdns.getresources(target, type) }
+          [Resolv::DNS::Resource::IN::A, Resolv::DNS::Resource::IN::AAAA]
+            .flat_map { |type| Resolv::DefaultMDNS.getresources(target, type) }
             .map { |a| { hostname: target.to_s, address: a.address.to_s } }
         end
     end

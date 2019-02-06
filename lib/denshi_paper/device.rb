@@ -4,8 +4,6 @@ require 'ipaddr'
 require 'faraday'
 require 'faraday_middleware'
 
-require 'denshi_paper/error'
-
 module DenshiPaper
   class Device
     DEFAULT_HOSTNAME = 'digitalpaper.local'
@@ -31,11 +29,11 @@ module DenshiPaper
     end
 
     def http_url
-      @http_url ||= URI::HTTP.build(host: address, port: API::HTTP_PORT)
+      @http_url ||= URI::HTTP.build(host: @hostname, port: API::HTTP_PORT)
     end
 
     def https_url
-      @https_url ||= URI::HTTPS.build(host: address, port: API::HTTPS_PORT)
+      @https_url ||= URI::HTTPS.build(host: @hostname, port: API::HTTPS_PORT)
     end
 
     private def connect
