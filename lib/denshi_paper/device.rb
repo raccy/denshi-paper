@@ -7,6 +7,9 @@ require 'faraday_middleware'
 module DenshiPaper
   class Device
     DEFAULT_HOSTNAME = 'digitalpaper.local'
+    HTTP_PORT = 8080
+    HTTPS_PORT = 8443
+    KNOWN_API_VERSIONS = ['1.3'].freeze
 
     attr_reader :address, :hostname
 
@@ -28,16 +31,28 @@ module DenshiPaper
       }
     end
 
-    def http_url
-      @http_url ||= URI::HTTP.build(host: @hostname, port: API::HTTP_PORT)
+    def http_url(use_ip: false)
+      if use_ip
+        URI::HTTP.build(host: @address, port: HTTP_PORT)
+      else
+        URI::HTTP.build(host: @hostname, port: HTTP_PORT)
+      end
     end
 
-    def https_url
-      @https_url ||= URI::HTTPS.build(host: @hostname, port: API::HTTPS_PORT)
+    def https_url(use_ip: false)
+      if use_ip
+        URI::HTTPS.build(host: @address, port: HTTPS_PORT)
+      else
+        URI::HTTPS.build(host: @hostname, port: HTTPS_PORT)
+      end
     end
 
+    # コネクタを取得する。
+    # IPアドレス接続
+    # クッキー不要
+    # 返答はJSONをシンボルネーム化したHash
     private def connect
-      @connect ||= Faraday.new(http_url) do |faraday|
+      @connect ||= Faraday.new(http_url(use_ip: true)) do |faraday|
         faraday.request :json
         faraday.response :logger, DenshiPaper.logger
         faraday.response :json, content_type: /\bjson$/,
@@ -47,8 +62,12 @@ module DenshiPaper
       end
     end
 
+    private def connect_get(*opts)
+      connect.get(*opts)
+    end
+
     def serial_number
-      @serial_number ||= connect.get(API::Path::SERIAL_NUMBER).body[:value]
+      @serial_number ||= connect_get('/register/serial_number').body[:value]
         .tap do |data|
         unless /\A\d+\z/.match?(data)
           raise InvalidDataError, 'Invalid serial number. ' \
@@ -70,7 +89,7 @@ module DenshiPaper
     end
 
     private def information
-      @information ||= connect.get(API::Path::INFORMATION).body.tap do |data|
+      @information ||= connect.get('/register/information').body.tap do |data|
         unless serial_number == data[:serial_number]
           raise InvalidDataError, 'Serial numbers do not match. ' \
             "information.serial_number: #{data.serial_number}, " \
@@ -80,7 +99,7 @@ module DenshiPaper
     end
 
     def api_version
-      @api_version ||= connect.get(API::Path::API_VERSION).body[:value]
+      @api_version ||= connect.get('/api_version').body[:value]
         .tap do |data|
         unless API::KNOWN_API_VERSIONS.include?(data)
           raise "Unknown api version. api_version: #{data}"

@@ -7,6 +7,9 @@ Layout/EndOfLine:
 Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
+Layout/IndentArray:
+  EnforcedStyle: consistent
+
 Style/Documentation:
   Enabled: false
 
@@ -30,3 +33,6 @@ Style/AccessModifierDeclarations:
 
 Style/RescueStandardError:
   EnforcedStyle: implicit
+
+Style/BlockDelimiters:
+  EnforcedStyle: braces_for_chaining

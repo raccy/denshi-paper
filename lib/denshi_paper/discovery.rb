@@ -49,14 +49,14 @@ module DenshiPaper
 
     def search_mdns_service
       srv_name = "_#{@service}._tcp.local."
-      Resolv::DefaultMDNS.getresources(srv_name, Resolv::DNS::Resource::IN::PTR)
+      DenshiPaper.mdns.getresources(srv_name, Resolv::DNS::Resource::IN::PTR)
         .map(&:name).uniq
-        .flat_map { |name| Resolv::DefaultMDNS.getresources(name,
-                                             Resolv::DNS::Resource::IN::SRV) }
-        .map(&:target).uniq
+        .flat_map { |name|
+          DenshiPaper.mdns.getresources(name, Resolv::DNS::Resource::IN::SRV)
+        }.map(&:target).uniq
         .flat_map do |target|
           [Resolv::DNS::Resource::IN::A, Resolv::DNS::Resource::IN::AAAA]
-            .flat_map { |type| Resolv::DefaultMDNS.getresources(target, type) }
+            .flat_map { |type| DenshiPaper.mdns.getresources(target, type) }
             .map { |a| { hostname: target.to_s, address: a.address.to_s } }
         end
     end
