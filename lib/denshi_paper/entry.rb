@@ -25,6 +25,10 @@ module DenshiPaper
       end
     end
 
+    def to_s
+      id
+    end
+
     private def convert_time(str)
       Time.iso8601(str)
     end

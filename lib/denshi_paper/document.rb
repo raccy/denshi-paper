@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DenshiPaper
-  class File < Entry
+  class Document < Entry
     TYPE = 'document'
 
     DOCUMENT_TYPES = ['normal', 'note'].freeze

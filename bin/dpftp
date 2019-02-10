@@ -59,6 +59,7 @@ if $0 == __FILE__
   pp client.root
   # pp client.folder_entries('root')
   pp client.folder_entries('64f0425d-4f45-479d-82e8-c5387257d61c')
+  pp client.resolve_entry('Document/Schedule/Scheduler2019.pdf')
   # pp client.folder_entries('e0ea6066-79ee-4e0b-99f7-4df0d152a2bd')
   # pp client.folder_entries('f4eafd45-1737-45ec-8f33-dada401eae6c')
   # client.root_folder.each do |entry|

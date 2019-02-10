@@ -3,6 +3,7 @@
 require 'openssl'
 require 'base64'
 require 'time'
+require 'uri'
 
 require 'faraday-cookie_jar'
 
@@ -77,23 +78,25 @@ module DenshiPaper
       connect_put('/system/configs/datetime', value: Time.now.utc.iso8601)
     end
 
-    def folder(uuid)
-      Folder.new(connect_get("/folders/#{uuid}").body)
+    def resolve_entry(path)
+      connect_get("/resolve/entry/#{URI.encode_www_form_component(path)}").body
     end
 
-    def folder_entries(folder)
-      id =
-        if folder.is_a?(Entry)
-          folder.id
-        else
-          folder.to_s
-        end
+    def folder(id)
+      Folder.new(connect_get("/folders/#{id}").body)
+    end
+
+    def document(id)
+      Document.new(connect_get("/documents/#{id}").body)
+    end
+
+    def folder_entries(id)
       connect_get("/folders/#{id}/entries").body[:entry_list].map do |data|
         case data[:entry_type]
         when 'folder'
           Folder.new(data)
         when 'document'
-          File.new(data)
+          Document.new(data)
         else
           Entry.new(data)
         end
