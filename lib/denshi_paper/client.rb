@@ -20,8 +20,13 @@ module DenshiPaper
           OpenSSL::PKey::RSA.new(private_key, pass)
         end
       @authed = false
+      @host2addr = {@device.hostname => [@device.address]}
     end
 
+    # コネクタを取得する。
+    # ホスト名接続
+    # クッキー必要
+    # 返答はJSONをシンボルネーム化したHash
     private def connect
       @connect ||=
         Faraday.new(@device.https_url, ssl: { verify: false }) do |faraday|
@@ -35,6 +40,24 @@ module DenshiPaper
         end
     end
 
+    # 一時的なホスト名に対するIPアドレスを使用してGETする。
+    private def connect_get(*opts)
+      res = nil
+      DenshiPaper.spoof_hosts(@host2addr) do
+        res = connect.get(*opts)
+      end
+      res
+    end
+
+    # 一時的なホスト名に対するIPアドレスを使用してPUTする。
+    private def connect_put(*opts)
+      res = nil
+      DenshiPaper.spoof_hosts(@host2addr) do
+        res = connect.put(*opts)
+      end
+      res
+    end
+
     def authed?
       @authed
     end
@@ -42,7 +65,7 @@ module DenshiPaper
     def auth
       return true if authed?
 
-      nonce = connect.get("/auth/nonce/#{@client_id}").body[:nonce]
+      nonce = connect_get("/auth/nonce/#{@client_id}").body[:nonce]
       auth_data = {
         client_id: @client_id,
         nonce_signed:
@@ -53,14 +76,12 @@ module DenshiPaper
     end
 
     def config_datetime
-      pp connect.headers
-      connect.headers['Host'] = 'digitalpaper.local'
-      connect.put('/system/configs/datetime', { value:  Time.now.utc.iso8601 })
+      connect_put('/system/configs/datetime', value: Time.now.utc.iso8601)
     end
 
     def root
       config_datetime
-      connect.get('/folders/root/entries').body
+      connect_get('/folders/root/entries').body
     end
 
   end

@@ -23,7 +23,8 @@ Gem::Specification.new do |spec|
       f.match(%r{^(test|spec|features)/})
     end
   end
-  spec.required_ruby_version = '>= 2.5'
+
+  spec.required_ruby_version = '>= 2.6'
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']

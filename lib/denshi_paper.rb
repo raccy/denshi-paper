@@ -11,6 +11,7 @@ require 'denshi_paper/discovery'
 require 'denshi_paper/entry'
 require 'denshi_paper/folder'
 require 'denshi_paper/utils'
+require 'denshi_paper/version'
 
 module DenshiPaper
   VERSION = '0.1.0'
@@ -29,7 +30,7 @@ module DenshiPaper
   end
 
   def self.mdns
-    @mdns ||= Register::MDNS.new
+    @mdns ||= Resolv::MDNS.new
   end
 
   def self.hosts

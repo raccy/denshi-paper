@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'mutex_m'
+require 'resolv'
 
 module DenshiPaper
   module Utils
@@ -11,9 +12,20 @@ module DenshiPaper
         @records = {}
       end
 
-      # Resolvの定義をそのまま流用する
-      %i[getaddress getaddresses getname getnames].each do |sym|
-        define_method(sym, Resolv.instance_method(sym))
+      def getaddress(name)
+        enum_for(:each_address, name).first
+      end
+
+      def getaddresses(name)
+        enum_for(:each_address, name).to_a
+      end
+
+      def getname(address)
+        enum_for(:each_address, address).first
+      end
+
+      def getnames(address)
+        enum_for(:each_name, address).to_a
       end
 
       def each_address(name, &proc)
