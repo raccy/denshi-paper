@@ -10,17 +10,14 @@ module DenshiPaper
   class Client
     attr_reader :device
 
-    def initialize(device, client_id, private_key, pass = nil)
+    def initialize(device, client_id:, private_key:, ssl_verify: true)
       @device = device
       @client_id = client_id
-      @private_key =
-        if private_key.is_a?(OpenSSL::PKey::RSA)
-          private_key
-        else
-          OpenSSL::PKey::RSA.new(private_key, pass)
-        end
+      @private_key = private_key
+      @ssl_verify = ssl_verify
+
       @authed = false
-      @host2addr = {@device.hostname => [@device.address]}
+      @host2addr = { @device.hostname => [@device.address] }
     end
 
     # コネクタを取得する。
@@ -29,7 +26,8 @@ module DenshiPaper
     # 返答はJSONをシンボルネーム化したHash
     private def connect
       @connect ||=
-        Faraday.new(@device.https_url, ssl: { verify: false }) do |faraday|
+        Faraday.new(@device.https_url,
+          ssl: { verify: @ssl_verify }) do |faraday|
           faraday.use :cookie_jar
           faraday.request :json
           faraday.response :logger, DenshiPaper.logger
@@ -79,10 +77,12 @@ module DenshiPaper
       connect_put('/system/configs/datetime', value: Time.now.utc.iso8601)
     end
 
-    def root
-      config_datetime
-      connect_get('/folders/root/entries').body
+    def folder(uuid)
+      connect_get("/folders/#{uuid}").body
     end
 
+    def root
+      folder('root')
+    end
   end
 end

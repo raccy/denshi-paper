@@ -16,6 +16,8 @@ require 'denshi_paper/version'
 module DenshiPaper
   class InvalidDataError < StandardError
   end
+  class AuthError < StandardError
+  end
 
   def self.logger=(logger)
     @logger = logger

@@ -9,6 +9,7 @@ rescue LoadError
 end
 
 require 'optparse'
+require 'openssl'
 
 if $0 == __FILE__
   opt = OptionParser.new
@@ -19,9 +20,10 @@ if $0 == __FILE__
   private_key_file = nil
   private_key_pass = nil
   serial_number = nil
+  ssl_verify = true
 
   opt.on('-w', '--workspace=WORKSPACE',
-    'warkspace for the device') { |v| workspace = v }
+    'workspace for the device') { |v| workspace = v }
   opt.on('-i', '--id=CLIENT_UUID',
     'client uuid for the device') { |v| client_id = v }
   opt.on('-k', '--key=PRIVATE_KEY_FILE',
@@ -30,6 +32,8 @@ if $0 == __FILE__
     'private key passphrase for the device') { |v| private_key_pass = v }
   opt.on('-s', '--serial=SERIAL_NUMBER',
     'serial number of the device') { |v| serial_number = v }
+  opt.on('--[no-]ssl-verify',
+    'verify ssl connection (default: enabled)') { |v| ssl_verify = v }
   opt.on('-d', '--debug', 'debug mode') { |v| $DEBUG = v }
 
   opt.parse!(ARGV)
@@ -43,12 +47,14 @@ if $0 == __FILE__
     puts opt.help
     exit
   end
-  private_key = IO.read(private_key_file)
+  private_key = OpenSSL::PKey::RSA.new(
+    IO.read(private_key_file), private_key_pass
+  )
 
   disc = DenshiPaper::Discovery.new
   device = disc.search_device(serial_number)
-  client = DenshiPaper::Client.new(device, client_id, private_key,
-    private_key_pass)
+  client = DenshiPaper::Client.new(device,
+    client_id: client_id, private_key: private_key, ssl_verify: ssl_verify)
   client.auth
   pp client.root
   # client.root_folder.each do |entry|
