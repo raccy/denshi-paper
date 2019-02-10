@@ -81,6 +81,10 @@ module DenshiPaper
       connect_get("/folders/#{uuid}").body
     end
 
+    def folder_entries(uuid)
+      connect_get("/folders/#{uuid}/entries").body
+    end
+
     def root
       folder('root')
     end

@@ -2,10 +2,11 @@
 
 module DenshiPaper
   class Folder < Entry
+    TYPE = 'folder'
+
     def initialize(data)
       super
-      @type = 'folder'
-      raise InvalidDataError, 'Is not folder type' if @type == data[:entry_type]
+      raise InvalidDataError, 'not a folder type' if @type == TYPE
     end
   end
 end

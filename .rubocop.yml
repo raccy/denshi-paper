@@ -36,3 +36,6 @@ Style/RescueStandardError:
 
 Style/BlockDelimiters:
   EnforcedStyle: braces_for_chaining
+
+Style/WordArray:
+  MinSize: 3

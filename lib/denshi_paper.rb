@@ -10,6 +10,7 @@ require 'denshi_paper/device'
 require 'denshi_paper/discovery'
 require 'denshi_paper/entry'
 require 'denshi_paper/folder'
+require 'denshi_paper/file'
 require 'denshi_paper/utils'
 require 'denshi_paper/version'
 
