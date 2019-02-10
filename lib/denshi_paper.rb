@@ -14,8 +14,6 @@ require 'denshi_paper/utils'
 require 'denshi_paper/version'
 
 module DenshiPaper
-  VERSION = '0.1.0'
-
   class InvalidDataError < StandardError
   end
 
@@ -42,7 +40,8 @@ module DenshiPaper
 
     Resolv::DefaultResolver.replace_resolvers([
       hosts,
-      Resolv::DefaultResolver,
+      Resolv::Hosts.new,
+      Resolv::DNS.new,
       mdns,
     ])
     @resolvers_initialized = true

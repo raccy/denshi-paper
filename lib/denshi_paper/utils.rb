@@ -9,6 +9,7 @@ module DenshiPaper
       include Mutex_m
 
       def initialize()
+        super
         @records = {}
       end
 

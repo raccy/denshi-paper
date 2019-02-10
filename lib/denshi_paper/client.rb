@@ -71,7 +71,7 @@ module DenshiPaper
         nonce_signed:
           Base64.strict_encode64(@private_key.sign('sha256', nonce)),
       }
-      res = connect.put('/auth', auth_data)
+      res = connect_put('/auth', auth_data)
       @authed = res.success?
     end
 

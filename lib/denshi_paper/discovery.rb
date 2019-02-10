@@ -31,7 +31,8 @@ module DenshiPaper
 
     private def search_device_map
       devices = search_mdns_service.map do |host|
-        Device.new(host[:address], hostname: host[:hostname])
+        # ホスト名は設定しない
+        Device.new(host[:address])
       end
       DenshiPaper.logger.debug(devices)
 
