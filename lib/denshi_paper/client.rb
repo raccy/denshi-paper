@@ -78,11 +78,26 @@ module DenshiPaper
     end
 
     def folder(uuid)
-      connect_get("/folders/#{uuid}").body
+      Folder.new(connect_get("/folders/#{uuid}").body)
     end
 
-    def folder_entries(uuid)
-      connect_get("/folders/#{uuid}/entries").body
+    def folder_entries(folder)
+      id =
+        if folder.is_a?(Entry)
+          folder.id
+        else
+          folder.to_s
+        end
+      connect_get("/folders/#{id}/entries").body[:entry_list].map do |data|
+        case data[:entry_type]
+        when 'folder'
+          Folder.new(data)
+        when 'document'
+          File.new(data)
+        else
+          Entry.new(data)
+        end
+      end
     end
 
     def root

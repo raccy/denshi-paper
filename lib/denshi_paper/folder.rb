@@ -6,7 +6,7 @@ module DenshiPaper
 
     def initialize(data)
       super
-      raise InvalidDataError, 'not a folder type' if @type == TYPE
+      raise InvalidDataError, 'not a folder type' unless type == TYPE
     end
   end
 end

@@ -19,7 +19,7 @@ module DenshiPaper
       @is_new = convert_bool(data[:is_new])
       @parent_folder_id = convert_uuid(data[:parent_folder_id])
 
-      if TYPES.include?(@type)
+      unless TYPES.include?(@type)
         raise InvalidDataError,
           "unknown type: #{@type}"
       end

@@ -4,7 +4,7 @@ module DenshiPaper
   class File < Entry
     TYPE = 'document'
 
-    DOCUMENT_TYPE = ['normal', 'note'].freeze
+    DOCUMENT_TYPES = ['normal', 'note'].freeze
     MIME_TYPES = ['application/pdf'].freeze
 
     attr_reader :author,
@@ -14,7 +14,7 @@ module DenshiPaper
 
     def initialize(data)
       super
-      raise InvalidDataError, 'not a folder type' if @type == 'folder'
+      raise InvalidDataError, 'not a document type' unless type == TYPE
 
       @author = data[:author]
       @current_page = convert_int(data[:current_page])
@@ -27,9 +27,15 @@ module DenshiPaper
       @title = data[:title]
       @total_page = convert_int(data[:total_page])
 
-      if DOCUMENT_TYPES.include?(@document_type)
+      unless DOCUMENT_TYPES.include?(@document_type)
         raise InvalidDataError, "unknowen document type: #{@document_type}"
       end
+
+      unless MIME_TYPES.include?(@mime_type)
+        raise InvalidDataError, "unknowen mime type: #{@document_type}"
+      end
+
+
     end
   end
 end
