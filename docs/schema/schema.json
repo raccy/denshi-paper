@@ -296,6 +296,122 @@
         "value"
       ]
     },
+    "document": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "FIXME - Document",
+      "description": "FIXME",
+      "stability": "prototype",
+      "strictProperties": true,
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "id": {
+          "description": "unique identifier of document",
+          "readOnly": true,
+          "format": "uuid",
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "description": "unique name of document",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/document/definitions/id"
+            },
+            {
+              "$ref": "#/definitions/document/definitions/name"
+            }
+          ]
+        },
+        "created_at": {
+          "description": "when document was created",
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        },
+        "updated_at": {
+          "description": "when document was updated",
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new document.",
+          "href": "/documents",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Delete an existing document.",
+          "href": "/documents/{(%23%2Fdefinitions%2Fdocument%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing document.",
+          "href": "/documents/{(%23%2Fdefinitions%2Fdocument%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing documents.",
+          "href": "/documents",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        },
+        {
+          "description": "Update an existing document.",
+          "href": "/documents/{(%23%2Fdefinitions%2Fdocument%2Fdefinitions%2Fidentity)}",
+          "method": "PATCH",
+          "rel": "update",
+          "schema": {
+            "properties": {
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Update"
+        }
+      ],
+      "properties": {
+        "created_at": {
+          "$ref": "#/definitions/document/definitions/created_at"
+        },
+        "id": {
+          "$ref": "#/definitions/document/definitions/id"
+        },
+        "name": {
+          "$ref": "#/definitions/document/definitions/name"
+        },
+        "updated_at": {
+          "$ref": "#/definitions/document/definitions/updated_at"
+        }
+      }
+    },
     "entries": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
       "title": "エントリーリスト",
@@ -383,7 +499,7 @@
           "type": [
             "string"
           ],
-          "pattern": "root"
+          "pattern": "root|uuid"
         },
         "name": {
           "description": "エントリーの名前",
@@ -420,10 +536,11 @@
         "parent_folder_id": {
           "description": "親フォルダーのID",
           "readOnly": true,
+          "format": "uuid",
           "type": [
             "string"
           ],
-          "format": "uuid"
+          "pattern": "\"\"|root|uuid"
         },
         "identity": {
           "anyOf": [
@@ -434,86 +551,6 @@
               "$ref": "#/definitions/entry/definitions/path"
             }
           ]
-        },
-        "author": {
-          "description": "著者(ドキュメントのみ)",
-          "readOnly": true,
-          "type": [
-            "string"
-          ],
-          "example": "太宰 治"
-        },
-        "current_page": {
-          "description": "現在のページ(ドキュメントのみ)",
-          "readOnly": true,
-          "type": [
-            "string"
-          ],
-          "example": "1"
-        },
-        "document_type": {
-          "description": "ドキュメントの種類(ドキュメントのみ)",
-          "readOnly": true,
-          "type": [
-            "string"
-          ],
-          "example": "normal"
-        },
-        "file_revision": {
-          "description": "ファイルリビジョン(ドキュメントのみ)",
-          "readOnly": true,
-          "type": [
-            "string"
-          ],
-          "example": "ffffffffffff.1.0"
-        },
-        "file_size": {
-          "description": "ファイルサイズ(ドキュメントのみ)",
-          "readOnly": true,
-          "type": [
-            "string"
-          ],
-          "example": "1234567"
-        },
-        "mime_type": {
-          "description": "ファイルの種類(ドキュメントのみ)",
-          "readOnly": true,
-          "type": [
-            "string"
-          ],
-          "example": "application/pdf"
-        },
-        "modified_date": {
-          "description": "変更した日時(ドキュメントのみ)",
-          "readOnly": true,
-          "format": "date-time",
-          "type": [
-            "string"
-          ]
-        },
-        "reading_date": {
-          "description": "読んだ日時(ドキュメントのみ)",
-          "readOnly": true,
-          "format": "date-time",
-          "type": [
-            "string"
-          ]
-        },
-        "title": {
-          "description": "題名(ドキュメントのみ)",
-          "readOnly": true,
-          "type": [
-            "string"
-          ],
-          "example": "人間失格"
-        },
-        "total_page": {
-          "description": "総ページ数(ドキュメントのみ)",
-          "readOnly": true,
-          "type": [
-            "string"
-          ],
-          "example": "42"
         }
       },
       "links": [
@@ -564,9 +601,9 @@
         "is_new"
       ]
     },
-    "file": {
+    "folder": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
-      "title": "FIXME - File",
+      "title": "FIXME - Folder",
       "description": "FIXME",
       "stability": "prototype",
       "strictProperties": true,
@@ -575,7 +612,7 @@
       ],
       "definitions": {
         "id": {
-          "description": "unique identifier of file",
+          "description": "unique identifier of folder",
           "readOnly": true,
           "format": "uuid",
           "type": [
@@ -583,7 +620,7 @@
           ]
         },
         "name": {
-          "description": "unique name of file",
+          "description": "unique name of folder",
           "readOnly": true,
           "type": [
             "string"
@@ -592,22 +629,22 @@
         "identity": {
           "anyOf": [
             {
-              "$ref": "#/definitions/file/definitions/id"
+              "$ref": "#/definitions/folder/definitions/id"
             },
             {
-              "$ref": "#/definitions/file/definitions/name"
+              "$ref": "#/definitions/folder/definitions/name"
             }
           ]
         },
         "created_at": {
-          "description": "when file was created",
+          "description": "when folder was created",
           "format": "date-time",
           "type": [
             "string"
           ]
         },
         "updated_at": {
-          "description": "when file was updated",
+          "description": "when folder was updated",
           "format": "date-time",
           "type": [
             "string"
@@ -616,8 +653,8 @@
       },
       "links": [
         {
-          "description": "Create a new file.",
-          "href": "/files",
+          "description": "Create a new folder.",
+          "href": "/folders",
           "method": "POST",
           "rel": "create",
           "schema": {
@@ -630,29 +667,29 @@
           "title": "Create"
         },
         {
-          "description": "Delete an existing file.",
-          "href": "/files/{(%23%2Fdefinitions%2Ffile%2Fdefinitions%2Fidentity)}",
+          "description": "Delete an existing folder.",
+          "href": "/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}",
           "method": "DELETE",
           "rel": "destroy",
           "title": "Delete"
         },
         {
-          "description": "Info for existing file.",
-          "href": "/files/{(%23%2Fdefinitions%2Ffile%2Fdefinitions%2Fidentity)}",
+          "description": "Info for existing folder.",
+          "href": "/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}",
           "method": "GET",
           "rel": "self",
           "title": "Info"
         },
         {
-          "description": "List existing files.",
-          "href": "/files",
+          "description": "List existing folders.",
+          "href": "/folders",
           "method": "GET",
           "rel": "instances",
           "title": "List"
         },
         {
-          "description": "Update an existing file.",
-          "href": "/files/{(%23%2Fdefinitions%2Ffile%2Fdefinitions%2Fidentity)}",
+          "description": "Update an existing folder.",
+          "href": "/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}",
           "method": "PATCH",
           "rel": "update",
           "schema": {
@@ -667,16 +704,16 @@
       ],
       "properties": {
         "created_at": {
-          "$ref": "#/definitions/file/definitions/created_at"
+          "$ref": "#/definitions/folder/definitions/created_at"
         },
         "id": {
-          "$ref": "#/definitions/file/definitions/id"
+          "$ref": "#/definitions/folder/definitions/id"
         },
         "name": {
-          "$ref": "#/definitions/file/definitions/name"
+          "$ref": "#/definitions/folder/definitions/name"
         },
         "updated_at": {
-          "$ref": "#/definitions/file/definitions/updated_at"
+          "$ref": "#/definitions/folder/definitions/updated_at"
         }
       }
     },
@@ -857,14 +894,17 @@
     "datetime": {
       "$ref": "#/definitions/datetime"
     },
+    "document": {
+      "$ref": "#/definitions/document"
+    },
     "entries": {
       "$ref": "#/definitions/entries"
     },
     "entry": {
       "$ref": "#/definitions/entry"
     },
-    "file": {
-      "$ref": "#/definitions/file"
+    "folder": {
+      "$ref": "#/definitions/folder"
     },
     "information": {
       "$ref": "#/definitions/information"

@@ -17,7 +17,7 @@ definitions:
     readOnly: true
     format: uuid
     type: string
-    pattern: root
+    pattern: "root|uuid"
   name:
     description: エントリーの名前
     readOnly: true
@@ -41,62 +41,13 @@ definitions:
   parent_folder_id:
     description: 親フォルダーのID
     readOnly: true
-    type: string
     format: uuid
+    type: string
+    pattern: "\"\"|root|uuid"
   identity:
     anyOf:
     - "$ref": "/schemata/entry#/definitions/id"
     - "$ref": "/schemata/entry#/definitions/path"
-  author:
-    description: 著者(ドキュメントのみ)
-    readOnly: true
-    type: string
-    example: 太宰 治
-  current_page:
-    description: 現在のページ(ドキュメントのみ)
-    readOnly: true
-    type: string
-    example: "1"
-  document_type:
-    description: ドキュメントの種類(ドキュメントのみ)
-    readOnly: true
-    type: string
-    example: normal
-  file_revision:
-    description: ファイルリビジョン(ドキュメントのみ)
-    readOnly: true
-    type: string
-    example: "ffffffffffff.1.0"
-  file_size:
-    description: ファイルサイズ(ドキュメントのみ)
-    readOnly: true
-    type: string
-    example: "1234567"
-  mime_type:
-    description: ファイルの種類(ドキュメントのみ)
-    readOnly: true
-    type: string
-    example: application/pdf
-  modified_date:
-    description: 変更した日時(ドキュメントのみ)
-    readOnly: true
-    format: date-time
-    type: string
-  reading_date:
-    description: 読んだ日時(ドキュメントのみ)
-    readOnly: true
-    format: date-time
-    type: string
-  title:
-    description: 題名(ドキュメントのみ)
-    readOnly: true
-    type: string
-    example: 人間失格
-  total_page:
-    description: 総ページ数(ドキュメントのみ)
-    readOnly: true
-    type: string
-    example: "42"
 links:
 - description: フォルダーの情報を取得します。
   href: "/folders/{(%2Fschemata%2Fentry%23%2Fdefinitions%2Fid)}"

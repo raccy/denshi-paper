@@ -193,6 +193,186 @@ HTTP/1.1 204 No Content
 
 
 
+## <a name="resource-document">Document</a>
+
+スタビリティー: 試作 (`prototype`)
+
+FIXME
+
+### 属性
+
+| 名前 | 型 | 説明 | 例 |
+| ------- | ------- | ------- | ------- |
+| **created_at** | *date-time* | when document was created | `"2015-01-01T12:00:00Z"` |
+| **id** | *uuid* | unique identifier of document | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **name** | *string* | unique name of document | `"example"` |
+| **updated_at** | *date-time* | when document was updated | `"2015-01-01T12:00:00Z"` |
+
+### <a name="link-POST-document-/documents">Document Create</a>
+
+Create a new document.
+
+```
+POST /documents
+```
+
+
+#### curl 実行例
+
+```bash
+$ curl -n -X POST https://digitalpapel.local:8443/documents \
+  -d '{
+}' \
+  -H "Content-Type: application/json"
+```
+
+
+#### レスポンス例
+
+```
+HTTP/1.1 201 Created
+```
+
+```json
+{
+  "created_at": "2015-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "example",
+  "updated_at": "2015-01-01T12:00:00Z"
+}
+```
+
+### <a name="link-DELETE-document-/documents/{(%23%2Fdefinitions%2Fdocument%2Fdefinitions%2Fidentity)}">Document Delete</a>
+
+Delete an existing document.
+
+```
+DELETE /documents/{document_id_or_name}
+```
+
+
+#### curl 実行例
+
+```bash
+$ curl -n -X DELETE https://digitalpapel.local:8443/documents/$DOCUMENT_ID_OR_NAME \
+  -H "Content-Type: application/json"
+```
+
+
+#### レスポンス例
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "created_at": "2015-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "example",
+  "updated_at": "2015-01-01T12:00:00Z"
+}
+```
+
+### <a name="link-GET-document-/documents/{(%23%2Fdefinitions%2Fdocument%2Fdefinitions%2Fidentity)}">Document Info</a>
+
+Info for existing document.
+
+```
+GET /documents/{document_id_or_name}
+```
+
+
+#### curl 実行例
+
+```bash
+$ curl -n https://digitalpapel.local:8443/documents/$DOCUMENT_ID_OR_NAME
+```
+
+
+#### レスポンス例
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "created_at": "2015-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "example",
+  "updated_at": "2015-01-01T12:00:00Z"
+}
+```
+
+### <a name="link-GET-document-/documents">Document List</a>
+
+List existing documents.
+
+```
+GET /documents
+```
+
+
+#### curl 実行例
+
+```bash
+$ curl -n https://digitalpapel.local:8443/documents
+```
+
+
+#### レスポンス例
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+[
+  {
+    "created_at": "2015-01-01T12:00:00Z",
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "example",
+    "updated_at": "2015-01-01T12:00:00Z"
+  }
+]
+```
+
+### <a name="link-PATCH-document-/documents/{(%23%2Fdefinitions%2Fdocument%2Fdefinitions%2Fidentity)}">Document Update</a>
+
+Update an existing document.
+
+```
+PATCH /documents/{document_id_or_name}
+```
+
+
+#### curl 実行例
+
+```bash
+$ curl -n -X PATCH https://digitalpapel.local:8443/documents/$DOCUMENT_ID_OR_NAME \
+  -d '{
+}' \
+  -H "Content-Type: application/json"
+```
+
+
+#### レスポンス例
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "created_at": "2015-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "example",
+  "updated_at": "2015-01-01T12:00:00Z"
+}
+```
+
+
 ## <a name="resource-entries">エントリーリスト</a>
 
 スタビリティー: 製品 (`production`)
@@ -261,12 +441,12 @@ HTTP/1.1 200 OK
 | 名前 | 型 | 説明 | 例 |
 | ------- | ------- | ------- | ------- |
 | **created_date** | *date-time* | 作成日時 | `"2015-01-01T12:00:00Z"` |
-| **entry_id** | *uuid* | エントリーのID<br/> **pattern:** `root` | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **entry_id** | *uuid* | エントリーのID<br/> **pattern:** `root|uuid` | `"01234567-89ab-cdef-0123-456789abcdef"` |
 | **entry_name** | *string* | エントリーの名前 | `"example"` |
 | **entry_path** | *string* | エントリーのパス | `"Document/example.pdf"` |
 | **entry_type** | *string* | エントリーのタイプ<br/> **pattern:** `folder|document` | `"document"` |
 | **is_new** | *boolean* | 新規フラグ | `true` |
-| **parent_folder_id** | *uuid* | 親フォルダーのID | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **parent_folder_id** | *uuid* | 親フォルダーのID<br/> **pattern:** `""|root|uuid` | `"01234567-89ab-cdef-0123-456789abcdef"` |
 
 ### <a name="link-GET-entry-/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}">エントリー 取得</a>
 
@@ -339,7 +519,7 @@ HTTP/1.1 200 OK
 ```
 
 
-## <a name="resource-file">File</a>
+## <a name="resource-folder">Folder</a>
 
 スタビリティー: 試作 (`prototype`)
 
@@ -349,24 +529,24 @@ FIXME
 
 | 名前 | 型 | 説明 | 例 |
 | ------- | ------- | ------- | ------- |
-| **created_at** | *date-time* | when file was created | `"2015-01-01T12:00:00Z"` |
-| **id** | *uuid* | unique identifier of file | `"01234567-89ab-cdef-0123-456789abcdef"` |
-| **name** | *string* | unique name of file | `"example"` |
-| **updated_at** | *date-time* | when file was updated | `"2015-01-01T12:00:00Z"` |
+| **created_at** | *date-time* | when folder was created | `"2015-01-01T12:00:00Z"` |
+| **id** | *uuid* | unique identifier of folder | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **name** | *string* | unique name of folder | `"example"` |
+| **updated_at** | *date-time* | when folder was updated | `"2015-01-01T12:00:00Z"` |
 
-### <a name="link-POST-file-/files">File Create</a>
+### <a name="link-POST-folder-/folders">Folder Create</a>
 
-Create a new file.
+Create a new folder.
 
 ```
-POST /files
+POST /folders
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n -X POST https://digitalpapel.local:8443/files \
+$ curl -n -X POST https://digitalpapel.local:8443/folders \
   -d '{
 }' \
   -H "Content-Type: application/json"
@@ -388,19 +568,19 @@ HTTP/1.1 201 Created
 }
 ```
 
-### <a name="link-DELETE-file-/files/{(%23%2Fdefinitions%2Ffile%2Fdefinitions%2Fidentity)}">File Delete</a>
+### <a name="link-DELETE-folder-/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}">Folder Delete</a>
 
-Delete an existing file.
+Delete an existing folder.
 
 ```
-DELETE /files/{file_id_or_name}
+DELETE /folders/{folder_id_or_name}
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n -X DELETE https://digitalpapel.local:8443/files/$FILE_ID_OR_NAME \
+$ curl -n -X DELETE https://digitalpapel.local:8443/folders/$FOLDER_ID_OR_NAME \
   -H "Content-Type: application/json"
 ```
 
@@ -420,19 +600,19 @@ HTTP/1.1 200 OK
 }
 ```
 
-### <a name="link-GET-file-/files/{(%23%2Fdefinitions%2Ffile%2Fdefinitions%2Fidentity)}">File Info</a>
+### <a name="link-GET-folder-/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}">Folder Info</a>
 
-Info for existing file.
+Info for existing folder.
 
 ```
-GET /files/{file_id_or_name}
+GET /folders/{folder_id_or_name}
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n https://digitalpapel.local:8443/files/$FILE_ID_OR_NAME
+$ curl -n https://digitalpapel.local:8443/folders/$FOLDER_ID_OR_NAME
 ```
 
 
@@ -451,19 +631,19 @@ HTTP/1.1 200 OK
 }
 ```
 
-### <a name="link-GET-file-/files">File List</a>
+### <a name="link-GET-folder-/folders">Folder List</a>
 
-List existing files.
+List existing folders.
 
 ```
-GET /files
+GET /folders
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n https://digitalpapel.local:8443/files
+$ curl -n https://digitalpapel.local:8443/folders
 ```
 
 
@@ -484,19 +664,19 @@ HTTP/1.1 200 OK
 ]
 ```
 
-### <a name="link-PATCH-file-/files/{(%23%2Fdefinitions%2Ffile%2Fdefinitions%2Fidentity)}">File Update</a>
+### <a name="link-PATCH-folder-/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}">Folder Update</a>
 
-Update an existing file.
+Update an existing folder.
 
 ```
-PATCH /files/{file_id_or_name}
+PATCH /folders/{folder_id_or_name}
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n -X PATCH https://digitalpapel.local:8443/files/$FILE_ID_OR_NAME \
+$ curl -n -X PATCH https://digitalpapel.local:8443/folders/$FOLDER_ID_OR_NAME \
   -d '{
 }' \
   -H "Content-Type: application/json"

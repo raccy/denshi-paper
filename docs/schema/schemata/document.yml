@@ -1,0 +1,107 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: FIXME - Document
+description: FIXME
+stability: prototype
+strictProperties: true
+type:
+- object
+definitions:
+  author:
+    description: 著者(ドキュメントのみ)
+    readOnly: true
+    type: string
+    example: 太宰 治
+  current_page:
+    description: 現在のページ(ドキュメントのみ)
+    readOnly: true
+    type: string
+    example: "1"
+  document_type:
+    description: ドキュメントの種類(ドキュメントのみ)
+    readOnly: true
+    type: string
+    example: normal
+  file_revision:
+    description: ファイルリビジョン(ドキュメントのみ)
+    readOnly: true
+    type: string
+    example: "ffffffffffff.1.0"
+  file_size:
+    description: ファイルサイズ(ドキュメントのみ)
+    readOnly: true
+    type: string
+    example: "1234567"
+  mime_type:
+    description: ファイルの種類(ドキュメントのみ)
+    readOnly: true
+    type: string
+    example: application/pdf
+  modified_date:
+    description: 変更した日時(ドキュメントのみ)
+    readOnly: true
+    format: date-time
+    type: string
+  reading_date:
+    description: 読んだ日時(ドキュメントのみ)
+    readOnly: true
+    format: date-time
+    type: string
+  title:
+    description: 題名(ドキュメントのみ)
+    readOnly: true
+    type: string
+    example: 人間失格
+  total_page:
+    description: 総ページ数(ドキュメントのみ)
+    readOnly: true
+    type: string
+    example: "42"
+  identity:
+    anyOf:
+    - "$ref": "/schemata/entry#/definitions/id"
+    - "$ref": "/schemata/entry#/definitions/path"
+links:
+- description: Create a new document.
+  href: "/documents"
+  method: POST
+  rel: create
+  schema:
+    properties: {}
+    type:
+    - object
+  title: Create
+- description: Delete an existing document.
+  href: "/documents/{(%2Fschemata%2Fdocument%23%2Fdefinitions%2Fidentity)}"
+  method: DELETE
+  rel: destroy
+  title: Delete
+- description: Info for existing document.
+  href: "/documents/{(%2Fschemata%2Fdocument%23%2Fdefinitions%2Fidentity)}"
+  method: GET
+  rel: self
+  title: Info
+- description: List existing documents.
+  href: "/documents"
+  method: GET
+  rel: instances
+  title: List
+- description: Update an existing document.
+  href: "/documents/{(%2Fschemata%2Fdocument%23%2Fdefinitions%2Fidentity)}"
+  method: PATCH
+  rel: update
+  schema:
+    properties: {}
+    type:
+    - object
+  title: Update
+properties:
+  created_at:
+    "$ref": "/schemata/document#/definitions/created_at"
+  id:
+    "$ref": "/schemata/document#/definitions/id"
+  name:
+    "$ref": "/schemata/document#/definitions/name"
+  updated_at:
+    "$ref": "/schemata/document#/definitions/updated_at"
+id: schemata/document
