@@ -33,7 +33,7 @@ definitions:
     readOnly: true
     type: string
     example: document
-    pattern: "folder|document"
+    pattern: "folder or document"
   is_new:
     description: 新規フラグ
     readOnly: true
@@ -43,17 +43,12 @@ definitions:
     readOnly: true
     format: uuid
     type: string
-    pattern: "\"\"|root|uuid"
+    pattern: "\"\" or root or uuid"
   identity:
     anyOf:
     - "$ref": "/schemata/entry#/definitions/id"
     - "$ref": "/schemata/entry#/definitions/path"
 links:
-- description: フォルダーの情報を取得します。
-  href: "/folders/{(%2Fschemata%2Fentry%23%2Fdefinitions%2Fid)}"
-  method: GET
-  rel: self
-  title: 取得
 - description: |
     パスからエントリーの情報を取得します。
     パスはURLエスケープされます。

@@ -203,10 +203,23 @@ FIXME
 
 | 名前 | 型 | 説明 | 例 |
 | ------- | ------- | ------- | ------- |
-| **created_at** | *date-time* | when document was created | `"2015-01-01T12:00:00Z"` |
-| **id** | *uuid* | unique identifier of document | `"01234567-89ab-cdef-0123-456789abcdef"` |
-| **name** | *string* | unique name of document | `"example"` |
-| **updated_at** | *date-time* | when document was updated | `"2015-01-01T12:00:00Z"` |
+| **author** | *string* | 著者(ドキュメントのみ) | `"太宰 治"` |
+| **[created_date](#resource-entry)** | *date-time* | 作成日時 | `"2015-01-01T12:00:00Z"` |
+| **current_page** | *string* | 現在のページ(ドキュメントのみ) | `"1"` |
+| **document_type** | *string* | ドキュメントの種類(ドキュメントのみ) | `"normal"` |
+| **[entry_id](#resource-entry)** | *uuid* | エントリーのID<br/> **pattern:** `root|uuid` | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **[entry_name](#resource-entry)** | *string* | エントリーの名前 | `"example"` |
+| **[entry_path](#resource-entry)** | *string* | エントリーのパス | `"Document/example.pdf"` |
+| **[entry_type](#resource-entry)** | *string* | エントリーのタイプ<br/> **pattern:** `folder or document` | `"document"` |
+| **file_revision** | *string* | ファイルリビジョン(ドキュメントのみ) | `"ffffffffffff.1.0"` |
+| **file_size** | *string* | ファイルサイズ(ドキュメントのみ) | `"1234567"` |
+| **[is_new](#resource-entry)** | *boolean* | 新規フラグ | `true` |
+| **mime_type** | *string* | ファイルの種類(ドキュメントのみ) | `"application/pdf"` |
+| **modified_date** | *date-time* | 変更した日時(ドキュメントのみ) | `"2015-01-01T12:00:00Z"` |
+| **[parent_folder_id](#resource-entry)** | *uuid* | 親フォルダーのID<br/> **pattern:** `"" or root or uuid` | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **reading_date** | *date-time* | 読んだ日時(ドキュメントのみ) | `"2015-01-01T12:00:00Z"` |
+| **title** | *string* | 題名(ドキュメントのみ) | `"人間失格"` |
+| **total_page** | *string* | 総ページ数(ドキュメントのみ) | `"42"` |
 
 ### <a name="link-POST-document-/documents">Document Create</a>
 
@@ -235,10 +248,23 @@ HTTP/1.1 201 Created
 
 ```json
 {
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
+  "created_date": "2015-01-01T12:00:00Z",
+  "entry_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "entry_name": "example",
+  "entry_path": "Document/example.pdf",
+  "entry_type": "document",
+  "is_new": true,
+  "parent_folder_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "author": "太宰 治",
+  "current_page": "1",
+  "document_type": "normal",
+  "file_revision": "ffffffffffff.1.0",
+  "file_size": "1234567",
+  "mime_type": "application/pdf",
+  "modified_date": "2015-01-01T12:00:00Z",
+  "reading_date": "2015-01-01T12:00:00Z",
+  "title": "人間失格",
+  "total_page": "42"
 }
 ```
 
@@ -247,14 +273,14 @@ HTTP/1.1 201 Created
 Delete an existing document.
 
 ```
-DELETE /documents/{document_id_or_name}
+DELETE /documents/{document_id_or_path}
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n -X DELETE https://digitalpapel.local:8443/documents/$DOCUMENT_ID_OR_NAME \
+$ curl -n -X DELETE https://digitalpapel.local:8443/documents/$DOCUMENT_ID_OR_PATH \
   -H "Content-Type: application/json"
 ```
 
@@ -267,10 +293,23 @@ HTTP/1.1 200 OK
 
 ```json
 {
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
+  "created_date": "2015-01-01T12:00:00Z",
+  "entry_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "entry_name": "example",
+  "entry_path": "Document/example.pdf",
+  "entry_type": "document",
+  "is_new": true,
+  "parent_folder_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "author": "太宰 治",
+  "current_page": "1",
+  "document_type": "normal",
+  "file_revision": "ffffffffffff.1.0",
+  "file_size": "1234567",
+  "mime_type": "application/pdf",
+  "modified_date": "2015-01-01T12:00:00Z",
+  "reading_date": "2015-01-01T12:00:00Z",
+  "title": "人間失格",
+  "total_page": "42"
 }
 ```
 
@@ -279,14 +318,14 @@ HTTP/1.1 200 OK
 Info for existing document.
 
 ```
-GET /documents/{document_id_or_name}
+GET /documents/{document_id_or_path}
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n https://digitalpapel.local:8443/documents/$DOCUMENT_ID_OR_NAME
+$ curl -n https://digitalpapel.local:8443/documents/$DOCUMENT_ID_OR_PATH
 ```
 
 
@@ -298,10 +337,23 @@ HTTP/1.1 200 OK
 
 ```json
 {
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
+  "created_date": "2015-01-01T12:00:00Z",
+  "entry_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "entry_name": "example",
+  "entry_path": "Document/example.pdf",
+  "entry_type": "document",
+  "is_new": true,
+  "parent_folder_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "author": "太宰 治",
+  "current_page": "1",
+  "document_type": "normal",
+  "file_revision": "ffffffffffff.1.0",
+  "file_size": "1234567",
+  "mime_type": "application/pdf",
+  "modified_date": "2015-01-01T12:00:00Z",
+  "reading_date": "2015-01-01T12:00:00Z",
+  "title": "人間失格",
+  "total_page": "42"
 }
 ```
 
@@ -330,10 +382,23 @@ HTTP/1.1 200 OK
 ```json
 [
   {
-    "created_at": "2015-01-01T12:00:00Z",
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "example",
-    "updated_at": "2015-01-01T12:00:00Z"
+    "created_date": "2015-01-01T12:00:00Z",
+    "entry_id": "01234567-89ab-cdef-0123-456789abcdef",
+    "entry_name": "example",
+    "entry_path": "Document/example.pdf",
+    "entry_type": "document",
+    "is_new": true,
+    "parent_folder_id": "01234567-89ab-cdef-0123-456789abcdef",
+    "author": "太宰 治",
+    "current_page": "1",
+    "document_type": "normal",
+    "file_revision": "ffffffffffff.1.0",
+    "file_size": "1234567",
+    "mime_type": "application/pdf",
+    "modified_date": "2015-01-01T12:00:00Z",
+    "reading_date": "2015-01-01T12:00:00Z",
+    "title": "人間失格",
+    "total_page": "42"
   }
 ]
 ```
@@ -343,14 +408,14 @@ HTTP/1.1 200 OK
 Update an existing document.
 
 ```
-PATCH /documents/{document_id_or_name}
+PATCH /documents/{document_id_or_path}
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n -X PATCH https://digitalpapel.local:8443/documents/$DOCUMENT_ID_OR_NAME \
+$ curl -n -X PATCH https://digitalpapel.local:8443/documents/$DOCUMENT_ID_OR_PATH \
   -d '{
 }' \
   -H "Content-Type: application/json"
@@ -365,10 +430,23 @@ HTTP/1.1 200 OK
 
 ```json
 {
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
+  "created_date": "2015-01-01T12:00:00Z",
+  "entry_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "entry_name": "example",
+  "entry_path": "Document/example.pdf",
+  "entry_type": "document",
+  "is_new": true,
+  "parent_folder_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "author": "太宰 治",
+  "current_page": "1",
+  "document_type": "normal",
+  "file_revision": "ffffffffffff.1.0",
+  "file_size": "1234567",
+  "mime_type": "application/pdf",
+  "modified_date": "2015-01-01T12:00:00Z",
+  "reading_date": "2015-01-01T12:00:00Z",
+  "title": "人間失格",
+  "total_page": "42"
 }
 ```
 
@@ -444,43 +522,9 @@ HTTP/1.1 200 OK
 | **entry_id** | *uuid* | エントリーのID<br/> **pattern:** `root|uuid` | `"01234567-89ab-cdef-0123-456789abcdef"` |
 | **entry_name** | *string* | エントリーの名前 | `"example"` |
 | **entry_path** | *string* | エントリーのパス | `"Document/example.pdf"` |
-| **entry_type** | *string* | エントリーのタイプ<br/> **pattern:** `folder|document` | `"document"` |
+| **entry_type** | *string* | エントリーのタイプ<br/> **pattern:** `folder or document` | `"document"` |
 | **is_new** | *boolean* | 新規フラグ | `true` |
-| **parent_folder_id** | *uuid* | 親フォルダーのID<br/> **pattern:** `""|root|uuid` | `"01234567-89ab-cdef-0123-456789abcdef"` |
-
-### <a name="link-GET-entry-/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}">エントリー 取得</a>
-
-フォルダーの情報を取得します。
-
-```
-GET /folders/{entry_id}
-```
-
-
-#### curl 実行例
-
-```bash
-$ curl -n https://digitalpapel.local:8443/folders/$ENTRY_ID
-```
-
-
-#### レスポンス例
-
-```
-HTTP/1.1 200 OK
-```
-
-```json
-{
-  "created_date": "2015-01-01T12:00:00Z",
-  "entry_id": "01234567-89ab-cdef-0123-456789abcdef",
-  "entry_name": "example",
-  "entry_path": "Document/example.pdf",
-  "entry_type": "document",
-  "is_new": true,
-  "parent_folder_id": "01234567-89ab-cdef-0123-456789abcdef"
-}
-```
+| **parent_folder_id** | *uuid* | 親フォルダーのID<br/> **pattern:** `"" or root or uuid` | `"01234567-89ab-cdef-0123-456789abcdef"` |
 
 ### <a name="link-GET-entry-/resolve/entry/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fpath)}">エントリー 名前から取得</a>
 
@@ -529,59 +573,27 @@ FIXME
 
 | 名前 | 型 | 説明 | 例 |
 | ------- | ------- | ------- | ------- |
-| **created_at** | *date-time* | when folder was created | `"2015-01-01T12:00:00Z"` |
-| **id** | *uuid* | unique identifier of folder | `"01234567-89ab-cdef-0123-456789abcdef"` |
-| **name** | *string* | unique name of folder | `"example"` |
-| **updated_at** | *date-time* | when folder was updated | `"2015-01-01T12:00:00Z"` |
+| **[created_date](#resource-entry)** | *date-time* | 作成日時 | `"2015-01-01T12:00:00Z"` |
+| **[entry_id](#resource-entry)** | *uuid* | エントリーのID<br/> **pattern:** `root|uuid` | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **[entry_name](#resource-entry)** | *string* | エントリーの名前 | `"example"` |
+| **[entry_path](#resource-entry)** | *string* | エントリーのパス | `"Document/example.pdf"` |
+| **[entry_type](#resource-entry)** | *string* | エントリーのタイプ<br/> **pattern:** `folder or document` | `"document"` |
+| **[is_new](#resource-entry)** | *boolean* | 新規フラグ | `true` |
+| **[parent_folder_id](#resource-entry)** | *uuid* | 親フォルダーのID<br/> **pattern:** `"" or root or uuid` | `"01234567-89ab-cdef-0123-456789abcdef"` |
 
-### <a name="link-POST-folder-/folders">Folder Create</a>
+### <a name="link-GET-folder-/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}">Folder 取得</a>
 
-Create a new folder.
-
-```
-POST /folders
-```
-
-
-#### curl 実行例
-
-```bash
-$ curl -n -X POST https://digitalpapel.local:8443/folders \
-  -d '{
-}' \
-  -H "Content-Type: application/json"
-```
-
-
-#### レスポンス例
+フォルダーの情報を取得します。
 
 ```
-HTTP/1.1 201 Created
-```
-
-```json
-{
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
-}
-```
-
-### <a name="link-DELETE-folder-/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}">Folder Delete</a>
-
-Delete an existing folder.
-
-```
-DELETE /folders/{folder_id_or_name}
+GET /folders/{entry_id}
 ```
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n -X DELETE https://digitalpapel.local:8443/folders/$FOLDER_ID_OR_NAME \
-  -H "Content-Type: application/json"
+$ curl -n https://digitalpapel.local:8443/folders/$ENTRY_ID
 ```
 
 
@@ -593,108 +605,13 @@ HTTP/1.1 200 OK
 
 ```json
 {
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
-}
-```
-
-### <a name="link-GET-folder-/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}">Folder Info</a>
-
-Info for existing folder.
-
-```
-GET /folders/{folder_id_or_name}
-```
-
-
-#### curl 実行例
-
-```bash
-$ curl -n https://digitalpapel.local:8443/folders/$FOLDER_ID_OR_NAME
-```
-
-
-#### レスポンス例
-
-```
-HTTP/1.1 200 OK
-```
-
-```json
-{
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
-}
-```
-
-### <a name="link-GET-folder-/folders">Folder List</a>
-
-List existing folders.
-
-```
-GET /folders
-```
-
-
-#### curl 実行例
-
-```bash
-$ curl -n https://digitalpapel.local:8443/folders
-```
-
-
-#### レスポンス例
-
-```
-HTTP/1.1 200 OK
-```
-
-```json
-[
-  {
-    "created_at": "2015-01-01T12:00:00Z",
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "example",
-    "updated_at": "2015-01-01T12:00:00Z"
-  }
-]
-```
-
-### <a name="link-PATCH-folder-/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}">Folder Update</a>
-
-Update an existing folder.
-
-```
-PATCH /folders/{folder_id_or_name}
-```
-
-
-#### curl 実行例
-
-```bash
-$ curl -n -X PATCH https://digitalpapel.local:8443/folders/$FOLDER_ID_OR_NAME \
-  -d '{
-}' \
-  -H "Content-Type: application/json"
-```
-
-
-#### レスポンス例
-
-```
-HTTP/1.1 200 OK
-```
-
-```json
-{
-  "created_at": "2015-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "example",
-  "updated_at": "2015-01-01T12:00:00Z"
+  "created_date": "2015-01-01T12:00:00Z",
+  "entry_id": "01234567-89ab-cdef-0123-456789abcdef",
+  "entry_name": "example",
+  "entry_path": "Document/example.pdf",
+  "entry_type": "document",
+  "is_new": true,
+  "parent_folder_id": "01234567-89ab-cdef-0123-456789abcdef"
 }
 ```
 

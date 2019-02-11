@@ -96,12 +96,38 @@ links:
     - object
   title: Update
 properties:
-  created_at:
-    "$ref": "/schemata/document#/definitions/created_at"
-  id:
-    "$ref": "/schemata/document#/definitions/id"
-  name:
-    "$ref": "/schemata/document#/definitions/name"
-  updated_at:
-    "$ref": "/schemata/document#/definitions/updated_at"
+  created_date:
+    "$ref": "/schemata/entry#/definitions/created_date"
+  entry_id:
+    "$ref": "/schemata/entry#/definitions/id"
+  entry_name:
+    "$ref": "/schemata/entry#/definitions/name"
+  entry_path:
+    "$ref": "/schemata/entry#/definitions/path"
+  entry_type:
+    "$ref": "/schemata/entry#/definitions/type"
+  is_new:
+    "$ref": "/schemata/entry#/definitions/is_new"
+  parent_folder_id:
+    "$ref": "/schemata/entry#/definitions/parent_folder_id"
+  author:
+    "$ref": "/schemata/document#/definitions/author"
+  current_page:
+    "$ref": "/schemata/document#/definitions/current_page"
+  document_type:
+    "$ref": "/schemata/document#/definitions/document_type"
+  file_revision:
+    "$ref": "/schemata/document#/definitions/file_revision"
+  file_size:
+    "$ref": "/schemata/document#/definitions/file_size"
+  mime_type:
+    "$ref": "/schemata/document#/definitions/mime_type"
+  modified_date:
+    "$ref": "/schemata/document#/definitions/modified_date"
+  reading_date:
+    "$ref": "/schemata/document#/definitions/reading_date"
+  title:
+    "$ref": "/schemata/document#/definitions/title"
+  total_page:
+    "$ref": "/schemata/document#/definitions/total_page"
 id: schemata/document

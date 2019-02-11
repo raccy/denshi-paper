@@ -306,43 +306,94 @@
         "object"
       ],
       "definitions": {
-        "id": {
-          "description": "unique identifier of document",
+        "author": {
+          "description": "著者(ドキュメントのみ)",
           "readOnly": true,
-          "format": "uuid",
+          "type": [
+            "string"
+          ],
+          "example": "太宰 治"
+        },
+        "current_page": {
+          "description": "現在のページ(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "1"
+        },
+        "document_type": {
+          "description": "ドキュメントの種類(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "normal"
+        },
+        "file_revision": {
+          "description": "ファイルリビジョン(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "ffffffffffff.1.0"
+        },
+        "file_size": {
+          "description": "ファイルサイズ(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "1234567"
+        },
+        "mime_type": {
+          "description": "ファイルの種類(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "application/pdf"
+        },
+        "modified_date": {
+          "description": "変更した日時(ドキュメントのみ)",
+          "readOnly": true,
+          "format": "date-time",
           "type": [
             "string"
           ]
         },
-        "name": {
-          "description": "unique name of document",
+        "reading_date": {
+          "description": "読んだ日時(ドキュメントのみ)",
           "readOnly": true,
+          "format": "date-time",
           "type": [
             "string"
           ]
+        },
+        "title": {
+          "description": "題名(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "人間失格"
+        },
+        "total_page": {
+          "description": "総ページ数(ドキュメントのみ)",
+          "readOnly": true,
+          "type": [
+            "string"
+          ],
+          "example": "42"
         },
         "identity": {
           "anyOf": [
             {
-              "$ref": "#/definitions/document/definitions/id"
+              "$ref": "#/definitions/entry/definitions/id"
             },
             {
-              "$ref": "#/definitions/document/definitions/name"
+              "$ref": "#/definitions/entry/definitions/path"
             }
-          ]
-        },
-        "created_at": {
-          "description": "when document was created",
-          "format": "date-time",
-          "type": [
-            "string"
-          ]
-        },
-        "updated_at": {
-          "description": "when document was updated",
-          "format": "date-time",
-          "type": [
-            "string"
           ]
         }
       },
@@ -398,17 +449,56 @@
         }
       ],
       "properties": {
-        "created_at": {
-          "$ref": "#/definitions/document/definitions/created_at"
+        "created_date": {
+          "$ref": "#/definitions/entry/definitions/created_date"
         },
-        "id": {
-          "$ref": "#/definitions/document/definitions/id"
+        "entry_id": {
+          "$ref": "#/definitions/entry/definitions/id"
         },
-        "name": {
-          "$ref": "#/definitions/document/definitions/name"
+        "entry_name": {
+          "$ref": "#/definitions/entry/definitions/name"
         },
-        "updated_at": {
-          "$ref": "#/definitions/document/definitions/updated_at"
+        "entry_path": {
+          "$ref": "#/definitions/entry/definitions/path"
+        },
+        "entry_type": {
+          "$ref": "#/definitions/entry/definitions/type"
+        },
+        "is_new": {
+          "$ref": "#/definitions/entry/definitions/is_new"
+        },
+        "parent_folder_id": {
+          "$ref": "#/definitions/entry/definitions/parent_folder_id"
+        },
+        "author": {
+          "$ref": "#/definitions/document/definitions/author"
+        },
+        "current_page": {
+          "$ref": "#/definitions/document/definitions/current_page"
+        },
+        "document_type": {
+          "$ref": "#/definitions/document/definitions/document_type"
+        },
+        "file_revision": {
+          "$ref": "#/definitions/document/definitions/file_revision"
+        },
+        "file_size": {
+          "$ref": "#/definitions/document/definitions/file_size"
+        },
+        "mime_type": {
+          "$ref": "#/definitions/document/definitions/mime_type"
+        },
+        "modified_date": {
+          "$ref": "#/definitions/document/definitions/modified_date"
+        },
+        "reading_date": {
+          "$ref": "#/definitions/document/definitions/reading_date"
+        },
+        "title": {
+          "$ref": "#/definitions/document/definitions/title"
+        },
+        "total_page": {
+          "$ref": "#/definitions/document/definitions/total_page"
         }
       }
     },
@@ -524,7 +614,7 @@
             "string"
           ],
           "example": "document",
-          "pattern": "folder|document"
+          "pattern": "folder or document"
         },
         "is_new": {
           "description": "新規フラグ",
@@ -540,7 +630,7 @@
           "type": [
             "string"
           ],
-          "pattern": "\"\"|root|uuid"
+          "pattern": "\"\" or root or uuid"
         },
         "identity": {
           "anyOf": [
@@ -554,13 +644,6 @@
         }
       },
       "links": [
-        {
-          "description": "フォルダーの情報を取得します。",
-          "href": "/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}",
-          "method": "GET",
-          "rel": "self",
-          "title": "取得"
-        },
         {
           "description": "パスからエントリーの情報を取得します。\nパスはURLエスケープされます。\n",
           "href": "/resolve/entry/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fpath)}",
@@ -611,109 +694,47 @@
         "object"
       ],
       "definitions": {
-        "id": {
-          "description": "unique identifier of folder",
-          "readOnly": true,
-          "format": "uuid",
-          "type": [
-            "string"
-          ]
-        },
-        "name": {
-          "description": "unique name of folder",
-          "readOnly": true,
-          "type": [
-            "string"
-          ]
-        },
         "identity": {
           "anyOf": [
             {
-              "$ref": "#/definitions/folder/definitions/id"
+              "$ref": "#/definitions/entry/definitions/id"
             },
             {
-              "$ref": "#/definitions/folder/definitions/name"
+              "$ref": "#/definitions/entry/definitions/name"
             }
-          ]
-        },
-        "created_at": {
-          "description": "when folder was created",
-          "format": "date-time",
-          "type": [
-            "string"
-          ]
-        },
-        "updated_at": {
-          "description": "when folder was updated",
-          "format": "date-time",
-          "type": [
-            "string"
           ]
         }
       },
       "links": [
         {
-          "description": "Create a new folder.",
-          "href": "/folders",
-          "method": "POST",
-          "rel": "create",
-          "schema": {
-            "properties": {
-            },
-            "type": [
-              "object"
-            ]
-          },
-          "title": "Create"
-        },
-        {
-          "description": "Delete an existing folder.",
-          "href": "/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}",
-          "method": "DELETE",
-          "rel": "destroy",
-          "title": "Delete"
-        },
-        {
-          "description": "Info for existing folder.",
-          "href": "/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}",
+          "description": "フォルダーの情報を取得します。",
+          "href": "/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}",
           "method": "GET",
           "rel": "self",
-          "title": "Info"
-        },
-        {
-          "description": "List existing folders.",
-          "href": "/folders",
-          "method": "GET",
-          "rel": "instances",
-          "title": "List"
-        },
-        {
-          "description": "Update an existing folder.",
-          "href": "/folders/{(%23%2Fdefinitions%2Ffolder%2Fdefinitions%2Fidentity)}",
-          "method": "PATCH",
-          "rel": "update",
-          "schema": {
-            "properties": {
-            },
-            "type": [
-              "object"
-            ]
-          },
-          "title": "Update"
+          "title": "取得"
         }
       ],
       "properties": {
-        "created_at": {
-          "$ref": "#/definitions/folder/definitions/created_at"
+        "created_date": {
+          "$ref": "#/definitions/entry/definitions/created_date"
         },
-        "id": {
-          "$ref": "#/definitions/folder/definitions/id"
+        "entry_id": {
+          "$ref": "#/definitions/entry/definitions/id"
         },
-        "name": {
-          "$ref": "#/definitions/folder/definitions/name"
+        "entry_name": {
+          "$ref": "#/definitions/entry/definitions/name"
         },
-        "updated_at": {
-          "$ref": "#/definitions/folder/definitions/updated_at"
+        "entry_path": {
+          "$ref": "#/definitions/entry/definitions/path"
+        },
+        "entry_type": {
+          "$ref": "#/definitions/entry/definitions/type"
+        },
+        "is_new": {
+          "$ref": "#/definitions/entry/definitions/is_new"
+        },
+        "parent_folder_id": {
+          "$ref": "#/definitions/entry/definitions/parent_folder_id"
         }
       }
     },
