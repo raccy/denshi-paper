@@ -465,19 +465,31 @@ HTTP/1.1 200 OK
 | **entry_list** | *array* | エントリーのリスト | `[{"created_date":"2015-01-01T12:00:00Z","entry_id":"01234567-89ab-cdef-0123-456789abcdef","entry_name":"example","entry_path":"Document/example.pdf","entry_type":"document","is_new":true,"parent_folder_id":"01234567-89ab-cdef-0123-456789abcdef"}]` |
 | **entry_list_hash** | *string* | リストのハッシュ値 | `"example"` |
 
-### <a name="link-GET-entries-/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}/entriess">エントリーリスト 取得</a>
+### <a name="link-GET-entries-/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}/entries">エントリーリスト 取得</a>
 
 リストの一覧
 
 ```
-GET /folders/{entry_id}/entriess
+GET /folders/{entry_id}/entries
 ```
+
+#### オプションパラメーター
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **limit** | *integer* | ページャーの取得限度数
+通常は50
+<br/> **Range:** `1 <= value` | `42` |
+| **offset** | *integer* | ページャーのオフセット<br/> **Range:** `0 <= value` | `42` |
 
 
 #### curl 実行例
 
 ```bash
-$ curl -n https://digitalpapel.local:8443/folders/$ENTRY_ID/entriess
+$ curl -n https://digitalpapel.local:8443/folders/$ENTRY_ID/entries
+ -G \
+  -d offset=42 \
+  -d limit=42
 ```
 
 

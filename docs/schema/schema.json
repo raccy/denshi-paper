@@ -536,6 +536,22 @@
             "string"
           ]
         },
+        "offset": {
+          "description": "ページャーのオフセット",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ],
+          "minimum": 0
+        },
+        "limit": {
+          "description": "ページャーの取得限度数\n通常は50\n",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ],
+          "minimum": 1
+        },
         "identity": {
           "anyOf": [
             {
@@ -547,8 +563,21 @@
       "links": [
         {
           "description": "リストの一覧",
-          "href": "/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}/entriess",
+          "href": "/folders/{(%23%2Fdefinitions%2Fentry%2Fdefinitions%2Fid)}/entries",
           "method": "GET",
+          "schema": {
+            "type": [
+              "object"
+            ],
+            "properties": {
+              "offset": {
+                "$ref": "#/definitions/entries/definitions/offset"
+              },
+              "limit": {
+                "$ref": "#/definitions/entries/definitions/limit"
+              }
+            }
+          },
           "rel": "self",
           "title": "取得"
         }

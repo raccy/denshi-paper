@@ -20,13 +20,32 @@ definitions:
   entry_list_hash:
     description: リストのハッシュ値
     type: string
+  offset:
+    description: ページャーのオフセット
+    readOnly: true
+    type: integer
+    minimum: 0
+  limit:
+    description: |
+      ページャーの取得限度数
+      通常は50
+    readOnly: true
+    type: integer
+    minimum: 1
   identity:
     anyOf:
     - "$ref": "/schemata/entries#/definitions/entry_list_hash"
 links:
 - description: リストの一覧
-  href: "/folders/{(%2Fschemata%2Fentry%23%2Fdefinitions%2Fid)}/entriess"
+  href: "/folders/{(%2Fschemata%2Fentry%23%2Fdefinitions%2Fid)}/entries"
   method: GET
+  schema:
+    type: object
+    properties:
+      offset:
+        "$ref": "/schemata/entries#/definitions/offset"
+      limit:
+        "$ref": "/schemata/entries#/definitions/limit"
   rel: self
   title: 取得
 properties:
