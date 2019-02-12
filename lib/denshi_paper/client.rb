@@ -4,6 +4,8 @@ require 'openssl'
 require 'base64'
 require 'time'
 require 'uri'
+require 'logger'
+require 'pp'
 
 require 'faraday-cookie_jar'
 
@@ -44,6 +46,10 @@ module DenshiPaper
       res = nil
       DenshiPaper.spoof_hosts(@host2addr) do
         res = connect.get(*opts)
+      end
+      if DenshiPaper.logger.level <= Logger::DEBUG
+        DenshiPaper.logger.log(Logger::DEBUG, res.body.pretty_inspect,
+          'client')
       end
       res
     end
@@ -90,8 +96,34 @@ module DenshiPaper
       Document.new(connect_get("/documents/#{id}").body)
     end
 
-    def folder_entries(id)
-      connect_get("/folders/#{id}/entries").body[:entry_list].map do |data|
+    def folder_entries_all(id)
+      entries_all = {list: []}
+      offset = 0
+      loop do
+        entries = folder_entries(id, offset: offset)
+        entries_all[:count] ||= entries[:count]
+        entries_all[:list_hash] ||= entries[:list_hash]
+        entries_all[:list].concat(entries[:list])
+
+        unless entries_all[:count] == entries[:count] &&
+               entries_all[:list_hash] == entries[:list_hash]
+          raise InvalidDataError, 'folder entries change in listing'
+        end
+
+        break if entries_all[:list].size >= entries_all[:count]
+
+        offset = entries_all[:list].size
+      end
+      entries_all[:list]
+    end
+
+    def folder_entries(id, offset: 0, limit: 50)
+      req_data = {
+        offset: offset,
+        limit: limit,
+      }
+      body = connect_get("/folders/#{id}/entries", req_data).body
+      list = body[:entry_list].map do |data|
         case data[:entry_type]
         when 'folder'
           Folder.new(data)
@@ -101,6 +133,11 @@ module DenshiPaper
           Entry.new(data)
         end
       end
+      {
+        count: body[:count].to_i,
+        list: list,
+        list_hash: body[:entry_list_hash],
+      }
     end
 
     def root
